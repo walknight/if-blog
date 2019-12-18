@@ -6,6 +6,8 @@ class System_library
 	public $settings = array();
 	// Protected or private properties
 	protected $_table;
+	//load default template
+	protected $template;
 	
 	// Constructor
 	public function __construct()
@@ -23,6 +25,12 @@ class System_library
 		$this->CI->config->set_item('language', $this->get_default_language());
 		
 		$this->get_site_info();
+
+		//load base tempalte and default title
+		$this->template = $this->get_default_template();
+		$this->output->set_template($this->template.'/base_template');
+		$this->output->set_title($this->settings['site_title']);
+
 	}
 
 	// Public methods
@@ -136,9 +144,9 @@ class System_library
 		return $links;
 	}
 	
-	public function load($page, $data = NULL, $admin = FALSE)
+	public function load($page_name, $data = NULL, $admin = FALSE)
 	{
-		$data['page'] = $page;
+		$data['page'] = $page_name;
 
 		if ($this->settings['recognize_user_agent'] == 1)
 		{
@@ -163,29 +171,34 @@ class System_library
 			}
 			else
 			{
-				$template = $this->get_default_template();
-				$this->CI->load->view('templates/' . $template . '/layout/container', $data);
+				$this->CI->load->section('menu', 'themes/'.$this->template.'/section/menu');
+				$this->CI->load->section('footer', 'themes/'.$this->template.'/section/footer'); 
+		
+				$this->CI->load->view('themes/' . $this->template . '/layout/'.$page_name, $data);
 			}
 		}
 		else
 		{
 			if ($admin == TRUE)
 			{
-				$this->CI->load->view('admin/layout/container', $data);
+				$this->CI->load->view('admin/layout/'.$page_name, $data);
 			}
 			else
 			{
-				$template = $this->get_default_template();
-				$this->CI->load->view('templates/' . $template . '/layout/container', $data);
+				$this->CI->load->section('menu', 'themes/'.$this->template.'/section/menu');
+				$this->CI->load->section('footer', 'themes/'.$this->template.'/section/footer'); 
+
+				$this->CI->load->view('themes/' . $this->template . '/layout/'.$page_name, $data);
 			}
 		}
 	}
 	
 	public function load_normal($page, $data = NULL)
 	{
-		$template = $this->get_default_template();
-		
-		$this->CI->load->view('templates/' . $template . '/layout/pages/' . $page, $data);
+		$this->CI->load->section('menu', 'themes/'.$this->template.'/section/menu');
+		$this->CI->load->section('footer', 'themes/'.$this->template.'/section/footer'); 
+
+		$this->CI->load->view('themes/' . $this->template . '/layout/' . $page, $data);
 	}
 }
 

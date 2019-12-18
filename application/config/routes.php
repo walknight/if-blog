@@ -57,12 +57,12 @@ $route['translate_uri_dashes'] = FALSE;
 $route['page/(:num)'] 					= 'blog/index/$1';
 
 //ROUTE FOR POST
-//$route['blog/page/(:num)'] 				= 'blog/index/$1';
-$route['(:num)/(:num)/(:num)/(:any)'] 	= 'blog/post/$1/$2/$3/$4';
-$route['post/(:any)'] 					= 'blog/post/$1';
-$route['archive/(:any)']				= 'blog/archive/$1';
-$route['category/(:any)'] 				= 'blog/category/$1';
-$route['tags/(:any)'] 					= 'blog/tags/$1';
-$route['search'] 						= 'blog/search';
+$route['post/page/(:num)'] 				= 'post/index/$1';
+$route['(:num)/(:num)/(:num)/(:any)'] 	= 'post/date/$1/$2/$3/$4';
+$route['post/(:any)'] 					= 'post/index/$1';
+$route['archive/(:any)']				= 'post/archive/$1';
+$route['category/(:any)'] 				= 'post/category/$1';
+$route['tags/(:any)'] 					= 'post/tags/$1';
+$route['search'] 						= 'post/search';
 
 
