@@ -28,8 +28,8 @@ class System_library
 
 		//load base tempalte and default title
 		$this->template = $this->get_default_template();
-		$this->output->set_template($this->template.'/base_template');
-		$this->output->set_title($this->settings['site_title']);
+		$this->CI->output->set_template($this->template.'/base_template');
+		$this->CI->output->set_title($this->settings['site_title']);
 
 	}
 

@@ -9,7 +9,7 @@ class Post extends CI_Controller
 	// Constructor
 	public function __construct()
 	{
-		parent::Controller();
+		parent::__construct();
 
 		// Load needed models, libraries, helpers and language files
 		$this->load->model('post_model','blog');
