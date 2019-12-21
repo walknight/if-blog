@@ -17,7 +17,7 @@ class Users_model extends CI_Model
 	public function get_user_display_name($user_id)
 	{
 		$this->db->select('username, display_name');
-		$this->db->where('id', $user_id);
+		$this->db->where('userid', $user_id);
 		$query = $this->db->get($this->_table['users'], 1);
 			
 		if ($query->num_rows() == 1)
@@ -38,7 +38,7 @@ class Users_model extends CI_Model
 	public function get_user_website($user_id)
 	{
 		$this->db->select('website');
-		$this->db->where('id', $user_id);
+		$this->db->where('userid', $user_id);
 		$query = $this->db->get($this->_table['users'], 1);
 			
 		if ($query->num_rows() == 1)

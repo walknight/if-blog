@@ -17,9 +17,9 @@ class Post extends CI_Controller
 		
 		$this->load->library('user_agent');
 		
-		$this->load->library('securimage_library');
+		//$this->load->library('securimage_library');
 		
-		$this->_init_template();
+		//$this->_init_template();
     }
     
     private function _init_template()
@@ -43,8 +43,9 @@ class Post extends CI_Controller
 		$pages_count = ceil($config['total_rows'] / $config['per_page']);
 		$page = ($page == 0) ? 1 : $page;
 		$offset = $config['per_page'] * ($page - 1);
-			
-		if ($data['posts'] = $this->blog->get_posts($config['per_page'], $offset))
+		$data['posts'] = $this->blog->get_posts($config['per_page'], $offset);
+		
+		if ($data['posts'] != NULL)
 		{
 			if ($page > $pages_count)
 			{
@@ -64,11 +65,11 @@ class Post extends CI_Controller
 				$data['posts'][$key]['display_name'] = $this->users->get_user_display_name($post['author']);
 			}
 
-			$this->_template['page'] = 'blog/posts';
+			$this->_template['page'] = 'post/index';
 		}
 		else
 		{
-			$this->_template['page'] = 'errors/no_posts';
+			$this->_template['page'] = 'post/no_posts';
 		}
 			
 		$this->system_library->load($this->_template['page'], $data);

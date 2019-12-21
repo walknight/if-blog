@@ -11,6 +11,7 @@ class Post_model extends CI_Model
 		parent::__construct();
 
 		$this->_table = $this->config->item('database_tables');
+		$this->load->model('categories_model', 'categories');
 	}
 
 	// Public methods
@@ -63,9 +64,9 @@ class Post_model extends CI_Model
 	{
 		$current_date = date('Y-m-d');
 		
-		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.excerpt, posts.content, posts.allow_comments, posts.sticky, posts.status, posts.author, users.display_name');
+		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.allow_comments, posts.sticky, posts.status, posts.author, users.display_name');
 		$this->db->from($this->_table['posts'] . ' posts');
-		$this->db->join($this->_table['users'] . ' users', 'posts.author = users.id');
+		$this->db->join($this->_table['users'] . ' users', 'posts.author = users.userid');
 		$this->db->where('posts.status', 'published');
 		$this->db->where('posts.date_posted <=', $current_date);
 		$this->db->order_by('sticky', 'DESC');
