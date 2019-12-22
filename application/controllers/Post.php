@@ -16,6 +16,8 @@ class Post extends CI_Controller
 		$this->load->model('users_model','users');
 		
 		$this->load->library('user_agent');
+
+		$this->lang->load('posts_lang');
 		
 		//$this->load->library('securimage_library');
 		$this->_template['themes'] = $this->system_library->template;

@@ -13,16 +13,30 @@
             <p class="blog-post-meta"><?=strftime('%B %d, %Y', strtotime($post_item['date_posted'])); ?>  <?php echo lang('by'); ?> <?php echo $post_item['display_name']; ?></p>
             <?php echo $post_item['head_article']; ?>
             <?php echo anchor(post_url($post_item['url_title'], $post_item['date_posted']),lang('read_more'),['class'=>'btn btn-primary btn-sm float-right']); ?>
+            <?php if ($links = $this->system_library->generate_social_bookmarking_links(post_url($post_item['url_title'], $post_item['date_posted']), $post_item['title'])): ?>
+                <p><?php echo lang('add_to'); ?> <?php echo $links; ?></p>
+            <?php endif; ?>
         </div><!-- /.blog-post -->
         <hr>
         <?php } ?>
         <?php endforeach; ?>
         <?php } ?>
 
-        <nav class="blog-pagination">
-        <a class="btn btn-outline-primary" href="#">Older</a>
-        <a class="btn btn-outline-secondary disabled" href="#">Newer</a>
-        </nav>
+        <?php if ($posts_count > $posts_per_page): ?>
+            <nav class="blog-pagination">
+                <?php if ($current_page < $pages_count): ?>
+                    <a class="btn btn-outline-primary" href="<?php echo site_url('post/page/' . $next_page); ?>"><?php echo lang('older_entries'); ?></a>
+                <?php  endif; ?>
+
+                <?php if ($current_page > 1){ ?>
+                    <?php  if ($previous_page == 1){ ?>
+                        <a class="btn btn-outline-primary" href="<?php echo site_url();?>"><?php echo lang('newer_entries'); ?></a>
+                    <?php  }else{ ?>
+                        <a class="btn btn-outline-secondary disabled" href="<?php echo site_url('post/page/' . $previous_page); ?>"><?php echo lang('newer_entries'); ?></a>
+                    <?php } ?>
+                <?php } ?>
+            </nav>
+        <?php  endif; ?>
 
     </div><!-- /.blog-main -->
 
