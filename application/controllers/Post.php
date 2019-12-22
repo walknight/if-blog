@@ -18,17 +18,9 @@ class Post extends CI_Controller
 		$this->load->library('user_agent');
 		
 		//$this->load->library('securimage_library');
-		
-		//$this->_init_template();
+		$this->_template['themes'] = $this->system_library->template;
+	
     }
-    
-    private function _init_template()
-	{
-		$this->output->set_template($this->system_library->get_default_template());
-		//set default website name
-		$this->output->set_title($this->system_library->settings['site_title']);
-
-	}
 
 	// Public methods
 	public function index($page = null)
@@ -59,6 +51,9 @@ class Post extends CI_Controller
 			$data['next_page'] = $page + 1;
 			$data['previous_page'] = $page - 1;
 
+			//this is for sticky post
+			$data['sticky_post'] = $data['posts'][0];
+
 			foreach ($data['posts'] as $key => $post)
 			{
 				$data['posts'][$key]['url'] = post_url($post['url_title'], $post['date_posted']);
@@ -72,6 +67,9 @@ class Post extends CI_Controller
 			$this->_template['page'] = 'post/no_posts';
 		}
 			
+		$this->load->section('highlight', 'themes/'.$this->_template['themes'].'/section/highlight');
+		$this->load->section('featured', 'themes/'.$this->_template['themes'].'/section/featured');
+
 		$this->system_library->load($this->_template['page'], $data);
 
 	}

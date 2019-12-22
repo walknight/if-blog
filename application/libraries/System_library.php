@@ -7,7 +7,7 @@ class System_library
 	// Protected or private properties
 	protected $_table;
 	//load default template
-	protected $template;
+	public $template;
 	
 	// Constructor
 	public function __construct()

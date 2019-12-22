@@ -54,7 +54,7 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 //ROUTE FOR PAGE
-$route['page/(:num)'] 					= 'post/index/$1';
+$route['page/(:num)'] 					= 'page/index/$1';
 
 //ROUTE FOR POST
 $route['post/page/(:num)'] 				= 'post/index/$1';
