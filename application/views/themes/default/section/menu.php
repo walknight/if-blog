@@ -23,7 +23,7 @@
     <nav class="nav d-flex justify-content-between">
         <?php if(($categories = $this->categories_library->get_categories())); ?>
         <?php foreach($categories as $cat_item): ?>
-        <a class="p-2 text-muted" href="<?=$cat_item['url_name']?>"><?=$cat_item['name']?></a>        
+        <a class="p-2 text-muted" href="<?=category_url($cat_item['url_name'])?>"><?=$cat_item['name']?></a>        
         <?php endforeach; ?>
     </nav>
 </div>

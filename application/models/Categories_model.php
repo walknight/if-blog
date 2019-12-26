@@ -38,6 +38,18 @@ class Categories_model extends CI_Model
 			return $query->result_array();
 		}
 	}
+
+	public function get_categories_by_url($url)
+	{
+		$this->db->select('id, name, url_name, description');
+		$this->db->where('url_name', $url);
+
+		$query = $this->db->get($this->_table['categories']);
+
+		if($query->num_rows() > 0){
+			return $query->row_array();
+		}
+	}
 	
 	public function get_categories_by_post($post_id)
 	{

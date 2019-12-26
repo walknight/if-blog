@@ -12,9 +12,12 @@ class Post extends CI_Controller
 		parent::__construct();
 
 		// Load needed models, libraries, helpers and language files
-		$this->load->model('post_model','blog');
-		$this->load->model('users_model','users');
-		
+		$this->load->model([
+			'post_model' => 'blog',
+			'users_model' => 'users',
+			'categories_model' => 'category'
+		]);
+
 		$this->load->library('user_agent');
 
 		$this->lang->load('posts_lang');
@@ -114,11 +117,13 @@ class Post extends CI_Controller
 				}
 			}
 
-			$this->_template['page']	= 'blog/single_post';
+			$this->output->append_title($data['post']['title']);
+			
+			$this->_template['page']	= 'post/single_post';
 		}
 		else
 		{
-			$this->_template['page']	= 'errors/404';
+			show_404();
 		}
 			
 		$this->system_library->load($this->_template['page'], $data);
@@ -146,20 +151,30 @@ class Post extends CI_Controller
 
 	public function category($url_name = null)
 	{		
-		if ($data['posts'] = $this->blog->get_posts_by_category($url_name))
-		{
-			foreach ($data['posts'] as $key => $post)
+		$data['category'] = $this->category->get_categories_by_url($url_name);
+		$data['posts'] = $this->blog->get_posts_by_category($url_name);
+
+		if($data['category'] != NULL){
+			if ($data['posts'] != NULL)
 			{
-				$data['posts'][$key]['url'] = post_url($post['url_title'], $post['date_posted']);
-				$data['posts'][$key]['display_name'] = $this->users->get_user_display_name($post['author']);
+				foreach ($data['posts'] as $key => $post)
+				{
+					$data['posts'][$key]['url'] = post_url($post['url_title'], $post['date_posted']);
+					$data['posts'][$key]['display_name'] = $this->users->get_user_display_name($post['author']);
+				}
+
+			
 			}
 
-			$this->_template['page']	= 'blog/archive';
+			$this->output->append_title($data['category']['name']);
+			$this->_template['page']	= 'post/category_post';
 		}
 		else
 		{
-			$this->_template['page']	= 'errors/404';
+			show_404();
 		}
+		
+		
 			
 		$this->system_library->load($this->_template['page'], $data);
 	}
@@ -176,11 +191,11 @@ class Post extends CI_Controller
 				$data['posts'][$key]['display_name'] = $this->users->get_user_display_name($post['author']);
 			}
 				
-			$this->_template['page']	= 'blog/tags';
+			$this->_template['page']	= 'post/tags';
 		}
 		else
 		{
-			$this->_template['page']	= 'errors/tags_no_results';
+			show_404();
 		}
 		
 		$this->system_library->load($this->_template['page'], $data);
@@ -200,7 +215,7 @@ class Post extends CI_Controller
 					$data['posts'][$key]['display_name'] = $this->users->get_user_display_name($post['author']);
 				}
 					
-				$this->_template['page']	= 'blog/search';
+				$this->_template['page']	= 'post/search';
 			}
 			else
 			{

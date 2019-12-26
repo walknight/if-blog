@@ -39,6 +39,7 @@ $lang['error']							= "Error";
 $lang['not_found']						= "Not found.";
 $lang['no_posts_for_this_date']			= "There are no posts for this date.";
 $lang['no_posts_for_this_tag']			= "There are no posts with this tag.";
+$lang['no_posts_for_this_cat']			= "There are no posts with this categories.";
 $lang['blog_no_posts']					= "This blog has no posts.";
 $lang['invalid_confirmation_code']		= "The Confirmation code you have entered is invalid.";
 
