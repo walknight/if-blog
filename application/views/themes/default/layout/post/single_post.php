@@ -10,6 +10,7 @@
                 <hr>
                 <?=$post['main_article']; ?>
             </div><!-- /.blog-post -->
+            <?php if($post['allow_comments']){ ?>
             <div class="post-comments">
                 <header>
                     <h3 class="h6"><?=lang('comments')?><span class="no-of-comments">(3)</span></h3>
@@ -27,7 +28,7 @@
                 </div>
                 
             </div>
-            <?php if($post['allow_comments']){ ?>
+            
             <div class="add-comment mt-5 mb-5">
                 <header>
                     <h3 class="h6"><?=lang('leave_reply')?></h3>
@@ -52,6 +53,10 @@
                     </div>
                 </form>
             </div>
+            <?php } else { ?>
+            <div class="alert alert-danger">
+                <?=lang('comments_disabled')?>
+            </div>
             <?php } ?>
 
         </div><!-- /.blog-main -->
@@ -60,18 +65,11 @@
             <div class="p-3">
                 <h4 class="font-italic">Archives</h4>
                 <ol class="list-unstyled mb-0">
-                    <li><a href="#">March 2014</a></li>
-                    <li><a href="#">February 2014</a></li>
-                    <li><a href="#">January 2014</a></li>
-                    <li><a href="#">December 2013</a></li>
-                    <li><a href="#">November 2013</a></li>
-                    <li><a href="#">October 2013</a></li>
-                    <li><a href="#">September 2013</a></li>
-                    <li><a href="#">August 2013</a></li>
-                    <li><a href="#">July 2013</a></li>
-                    <li><a href="#">June 2013</a></li>
-                    <li><a href="#">May 2013</a></li>
-                    <li><a href="#">April 2013</a></li>
+                    <?php if (($archive = $this->archive_library->get_archive())): ?>
+                        <?php foreach ($archive as $archive_item): ?>
+                            <li><a href="<?php echo archive_url($archive_item['url']); ?>"><?php echo $archive_item['date_posted']; ?> (<?php echo $archive_item['posts_count']; ?>)</a></li>
+                        <?php endforeach; ?>
+                    <? endif; ?>
                 </ol>
             </div>
 

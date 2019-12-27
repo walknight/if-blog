@@ -143,6 +143,7 @@ class MY_Loader extends CI_Loader {
 	 * @return string
 	 */
 	function section($area, $view, $data=array()){
+
 		if(!array_key_exists($area, $this->_sections))
 			$this->_sections[$area] = array();
 

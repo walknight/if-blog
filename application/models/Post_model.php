@@ -64,10 +64,12 @@ class Post_model extends CI_Model
 	{
 		$current_date = date('Y-m-d');
 		
-		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.allow_comments, posts.sticky, posts.featured, posts.status, posts.author, users.display_name');
+		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.id_cat, posts.allow_comments, posts.sticky, posts.featured, posts.status, posts.author, users.display_name');
 		$this->db->from($this->_table['posts'] . ' posts');
 		$this->db->join($this->_table['users'] . ' users', 'posts.author = users.userid');
 		$this->db->where('posts.status', 'published');
+		$this->db->where('posts.featured', 0);
+		$this->db->where('posts.sticky', 0);
 		$this->db->where('posts.date_posted <=', $current_date);
 		$this->db->order_by('sticky', 'DESC');
 		$this->db->order_by('id', 'DESC');
@@ -81,10 +83,64 @@ class Post_model extends CI_Model
 			
 			foreach (array_keys($result) as $key)
 			{
-				$result[$key]['categories'] = $this->categories->get_categories_by_ids($this->get_post_categories($result[$key]['id']));
+				$result[$key]['categories'] = $this->categories->get_categories_by_ids($result[$key]['id_cat']);
 				$result[$key]['comment_count'] = $this->db->where('post_id', $result[$key]['id'])->from($this->_table['comments'])->count_all_results();
 			}
 
+			return $result;
+		}
+	}
+
+	public function get_posts_featured()
+	{
+		$current_date = date('Y-m-d');
+		
+		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.id_cat, posts.allow_comments, posts.sticky, posts.featured, posts.status, posts.author, users.display_name');
+		$this->db->from($this->_table['posts'] . ' posts');
+		$this->db->join($this->_table['users'] . ' users', 'posts.author = users.userid');
+		$this->db->where('posts.status', 'published');
+		$this->db->where('posts.featured', 1);
+		$this->db->order_by('id', 'DESC');
+		//$this->db->limit($number, $offset);
+			
+		$query = $this->db->get();
+			
+		if ($query->num_rows() > 0)
+		{
+			$result = $query->result_array();
+			
+			foreach (array_keys($result) as $key)
+			{
+				$result[$key]['categories'] = $this->categories->get_categories_by_ids($result[$key]['id_cat']);
+				$result[$key]['comment_count'] = $this->db->where('post_id', $result[$key]['id'])->from($this->_table['comments'])->count_all_results();
+			}
+
+			return $result;
+		}
+	}
+
+	public function get_posts_sticky()
+	{
+		$current_date = date('Y-m-d');
+		
+		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.id_cat, posts.allow_comments, posts.sticky, posts.featured, posts.status, posts.author, users.display_name');
+		$this->db->from($this->_table['posts'] . ' posts');
+		$this->db->join($this->_table['users'] . ' users', 'posts.author = users.userid');
+		$this->db->where('posts.status', 'published');
+		$this->db->where('posts.sticky', 1);
+		$this->db->where('posts.featured', 0);
+		$this->db->order_by('id', 'DESC');
+		//$this->db->limit($number, $offset);
+			
+		$query = $this->db->get();
+			
+		if ($query->num_rows() > 0)
+		{
+			$result = $query->row_array();
+			
+			$result['categories'] = $this->categories->get_categories_by_ids($result['id_cat']);
+			$result['comment_count'] = $this->db->where('post_id', $result['id'])->from($this->_table['comments'])->count_all_results();
+			
 			return $result;
 		}
 	}
@@ -94,7 +150,7 @@ class Post_model extends CI_Model
 		$date = $year . '-' . $month;
 		$current_date = date('Y-m-d');
 		
-		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.allow_comments, posts.sticky, posts.featured, posts.status, posts.author, users.display_name');
+		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.id_cat, posts.allow_comments, posts.sticky, posts.featured, posts.status, posts.author, users.display_name');
 		$this->db->from($this->_table['posts'] . ' posts');
 		$this->db->join($this->_table['users'] . ' users', 'posts.author = users.userid');
 		$this->db->where('posts.status', 'published');
@@ -111,7 +167,7 @@ class Post_model extends CI_Model
 			
 			foreach (array_keys($result) as $key)
 			{
-				$result[$key]['categories'] = $this->categories->get_categories_by_ids($this->get_post_categories($result[$key]['id']));
+				$result[$key]['categories'] = $this->categories->get_categories_by_ids($result[$key]['id_cat']);
 				$result[$key]['comment_count'] = $this->db->where('post_id', $result[$key]['id'])->from($this->_table['comments'])->count_all_results();
 			}
 
@@ -123,10 +179,10 @@ class Post_model extends CI_Model
 	{
 		$current_date = date('Y-m-d');
 		
-		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.allow_comments, posts.sticky, posts.status, posts.author, users.display_name');
+		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.id_cat, posts.allow_comments, posts.sticky, posts.status, posts.author, users.display_name');
 		$this->db->from($this->_table['posts'] . ' posts');
-		$this->db->join($this->_table['posts_to_categories'] . ' posts_to_categories', 'posts.id = posts_to_categories.post_id');
-		$this->db->join($this->_table['categories'] . ' categories', 'posts_to_categories.category_id = categories.id');
+		//$this->db->join($this->_table['posts_to_categories'] . ' posts_to_categories', 'posts.id = posts_to_categories.post_id');
+		$this->db->join($this->_table['categories'] . ' categories', 'posts.id_cat = categories.id');
 		$this->db->join($this->_table['users'] . ' users', 'posts.author = users.userid');
 		$this->db->where('posts.status', 'published');
 		$this->db->where('posts.date_posted <=', $current_date);
@@ -142,7 +198,7 @@ class Post_model extends CI_Model
 			
 			foreach (array_keys($result) as $key)
 			{
-				$result[$key]['categories'] = $this->categories->get_categories_by_ids($this->get_post_categories($result[$key]['id']));
+				$result[$key]['categories'] = $this->categories->get_categories_by_ids($result[$key]['id_cat']);
 				$result[$key]['comment_count'] = $this->db->where('post_id', $result[$key]['id'])->from($this->_table['comments'])->count_all_results();
 			}
 
@@ -154,7 +210,7 @@ class Post_model extends CI_Model
 	{
 		$date = $year . '-' . $month . '-' . $day;
 		
-		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.allow_comments, posts.sticky, posts.status, posts.author, users.display_name');
+		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.id_cat, posts.allow_comments, posts.sticky, posts.status, posts.author, users.display_name');
 		$this->db->from($this->_table['posts'] . ' posts');
 		$this->db->join($this->_table['users'] . ' users', 'posts.author = users.userid');
 		$this->db->where('posts.status', 'published');
@@ -168,7 +224,7 @@ class Post_model extends CI_Model
 		{
 			$result = $query->row_array();
 			
-			$result['categories'] = $this->categories->get_categories_by_ids($this->get_post_categories($result['id']));
+			$result['categories'] = $this->categories->get_categories_by_ids($result['id_cat']);
 			$result['comment_count'] = $this->db->where('post_id', $result['id'])->from($this->_table['comments'])->count_all_results();
 
 			return $result;
@@ -177,7 +233,7 @@ class Post_model extends CI_Model
 	
 	public function get_post_by_id($post_id)
 	{
-		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.allow_comments, posts.sticky, posts.status, posts.author, users.display_name');
+		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.id_cat, posts.allow_comments, posts.sticky, posts.status, posts.author, users.display_name');
 		$this->db->from($this->_table['posts'] . ' posts');
 		$this->db->join($this->_table['users'] . ' users', 'posts.author = users.userid');
 		$this->db->where('posts.status', 'published');
@@ -192,7 +248,7 @@ class Post_model extends CI_Model
 			
 			foreach (array_keys($result) as $key)
 			{
-				$result[$key]['categories'] = $this->categories->get_categories_by_ids($this->get_post_categories($result[$key]['id']));
+				$result[$key]['categories'] = $this->categories->get_categories_by_ids($result[$key]['id_cat']);
 				$result['comment_count'] = $this->db->where('post_id', $result['id'])->from($this->_table['comments'])->count_all_results();
 			}
 
@@ -204,7 +260,7 @@ class Post_model extends CI_Model
 	{
 		$current_date = date('Y-m-d');
 		
-		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.allow_comments, posts.sticky, posts.status, posts.author, users.display_name');
+		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.id_cat, posts.allow_comments, posts.sticky, posts.status, posts.author, users.display_name');
 		$this->db->from($this->_table['posts'] . ' posts');
 		$this->db->join($this->_table['users'] . ' users', 'posts.author = users.userid');
 		$this->db->join($this->_table['tags_to_posts'] . ' tags_to_posts', 'posts.id = tags_to_posts.post_id');
@@ -223,7 +279,7 @@ class Post_model extends CI_Model
 			
 			foreach (array_keys($result) as $key)
 			{
-				$result[$key]['categories'] = $this->categories->get_categories_by_ids($this->get_post_categories($result[$key]['id']));
+				$result[$key]['categories'] = $this->categories->get_categories_by_ids($result[$key]['id_cat']);
 				$result[$key]['comment_count'] = $this->db->where('post_id', $result[$key]['id'])->from($this->_table['comments'])->count_all_results();
 			}
 
@@ -235,7 +291,7 @@ class Post_model extends CI_Model
 	{
 		$current_date = date('Y-m-d');
 		
-		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.allow_comments, posts.sticky, posts.status, posts.author, users.display_name');
+		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.id_cat, posts.allow_comments, posts.sticky, posts.status, posts.author, users.display_name');
 		$this->db->from($this->_table['posts'] . ' posts');
 		$this->db->join($this->_table['users'] . ' users', 'posts.author = users.userid');
 		$this->db->where('posts.status', 'published');
@@ -254,7 +310,7 @@ class Post_model extends CI_Model
 			
 			foreach (array_keys($result) as $key)
 			{
-				$result[$key]['categories'] = $this->categories->get_categories_by_ids($this->get_post_categories($result[$key]['id']));
+				$result[$key]['categories'] = $this->categories->get_categories_by_ids($result[$key]['id_cat']);
 				$result[$key]['comment_count'] = $this->db->where('post_id', $result[$key]['id'])->from($this->_table['comments'])->count_all_results();
 			}
 

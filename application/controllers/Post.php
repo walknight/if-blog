@@ -57,7 +57,9 @@ class Post extends CI_Controller
 			$data['previous_page'] = $page - 1;
 
 			//this is for sticky post
-			$data['sticky_post'] = $data['posts'][0];
+			$sticky['sticky'] = $this->blog->get_posts_sticky();
+			//this is for featured post
+			$featured['featured'] = $this->blog->get_posts_featured();
 
 			foreach ($data['posts'] as $key => $post)
 			{
@@ -72,8 +74,8 @@ class Post extends CI_Controller
 			$this->_template['page'] = 'post/no_posts';
 		}
 			
-		$this->load->section('highlight', 'themes/'.$this->_template['themes'].'/section/highlight');
-		$this->load->section('featured', 'themes/'.$this->_template['themes'].'/section/featured');
+		$this->load->section('highlight', 'themes/'.$this->_template['themes'].'/section/highlight',$sticky);
+		$this->load->section('featured', 'themes/'.$this->_template['themes'].'/section/featured', $featured);
 
 		$this->system_library->load($this->_template['page'], $data);
 

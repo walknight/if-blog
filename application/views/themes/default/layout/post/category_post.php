@@ -7,17 +7,21 @@
 
 <main role="main" class="container">
     <div class="row">
-        <div class="col-md-10 blog-main">
+        <div class="col-md-9 blog-main">
             
             <?php if($posts != NULL){ ?>
             <?php foreach($posts as $cat_post): ?>
-            <div class="blog-post">
-                <h2 class="blog-post-title"><?=$cat_post['title']?></h2>
-                <p class="blog-post-meta"><?=strftime('%B %d, %Y', strtotime($cat_post['date_posted'])); ?>
-                    <?php echo lang('by'); ?> <?php echo $cat_post['display_name']; ?></p>
+                <div class="blog-post">
+                    
+                    <h2 class="blog-post-title"><?=$cat_post['title']?></h2>
+                    <p class="blog-post-meta"><?=strftime('%B %d, %Y', strtotime($cat_post['date_posted'])); ?>  <?php echo lang('by'); ?> <?php echo $cat_post['display_name']; ?></p>
+                    <?php echo $cat_post['head_article']; ?>
+                    <?php echo anchor(post_url($cat_post['url_title'], $cat_post['date_posted']),lang('read_more'),['class'=>'btn btn-primary btn-sm float-right']); ?>
+                    <?php if ($links = $this->system_library->generate_social_bookmarking_links(post_url($cat_post['url_title'], $cat_post['date_posted']), $cat_post['title'])): ?>
+                        <p><?php echo lang('add_to'); ?> <?php echo $links; ?></p>
+                    <?php endif; ?>
+                </div><!-- /.blog-post -->
                 <hr>
-                <?=$cat_post['head_article']?>
-            </div><!-- /.blog-post -->
             <?php endforeach; ?>
             <?php } else { ?>
                 <div class="alert alert-danger" role="alert">
@@ -27,22 +31,15 @@
 
         </div><!-- /.blog-main -->
 
-        <aside class="col-md-2 blog-sidebar">
+        <aside class="col-md-3 blog-sidebar">
             <div class="p-3">
                 <h4 class="font-italic">Archives</h4>
                 <ol class="list-unstyled mb-0">
-                    <li><a href="#">March 2014</a></li>
-                    <li><a href="#">February 2014</a></li>
-                    <li><a href="#">January 2014</a></li>
-                    <li><a href="#">December 2013</a></li>
-                    <li><a href="#">November 2013</a></li>
-                    <li><a href="#">October 2013</a></li>
-                    <li><a href="#">September 2013</a></li>
-                    <li><a href="#">August 2013</a></li>
-                    <li><a href="#">July 2013</a></li>
-                    <li><a href="#">June 2013</a></li>
-                    <li><a href="#">May 2013</a></li>
-                    <li><a href="#">April 2013</a></li>
+                    <?php if (($archive = $this->archive_library->get_archive())): ?>
+                        <?php foreach ($archive as $archive_item): ?>
+                            <li><a href="<?php echo archive_url($archive_item['url']); ?>"><?php echo $archive_item['date_posted']; ?> (<?php echo $archive_item['posts_count']; ?>)</a></li>
+                        <?php endforeach; ?>
+                    <? endif; ?>
                 </ol>
             </div>
 
