@@ -64,15 +64,15 @@ class Post_model extends CI_Model
 	{
 		$current_date = date('Y-m-d');
 		
-		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.id_cat, posts.allow_comments, posts.sticky, posts.featured, posts.status, posts.author, users.display_name');
+		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.id_cat, posts.allow_comments, posts.sticky, posts.featured, posts.status, posts.author, users.first_name');
 		$this->db->from($this->_table['posts'] . ' posts');
-		$this->db->join($this->_table['users'] . ' users', 'posts.author = users.userid');
+		$this->db->join($this->_table['users'] . ' users', 'posts.author = users.id');
 		$this->db->where('posts.status', 'published');
 		$this->db->where('posts.featured', 0);
 		$this->db->where('posts.sticky', 0);
 		$this->db->where('posts.date_posted <=', $current_date);
 		$this->db->order_by('sticky', 'DESC');
-		$this->db->order_by('id', 'DESC');
+		$this->db->order_by('posts.id', 'DESC');
 		$this->db->limit($number, $offset);
 			
 		$query = $this->db->get();

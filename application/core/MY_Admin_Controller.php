@@ -23,14 +23,14 @@ class MY_Controller extends CI_Controller {
                 #$this->output->enable_profiler(TRUE);
 	}
 
-        public function isLoggedin() {
+	public function isLoggedin() {
 
-            $logged = $this->session->userdata('logged_in');
-            if(!$logged) {
-                $this->session->set_flashdata('redirectToCurrent', current_url());
-                redirect(site_url('admin/home/login'));
-            }
+		$logged = $this->session->userdata('logged_in');
+		if(!$logged) {
+			$this->session->set_flashdata('redirectToCurrent', current_url());
+			redirect(site_url('admin/home/login'));
+		}
 
-        }
+	}
 
 }
