@@ -2,22 +2,28 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
-class Home extends MY_Admin_Controller{
+class Home extends MY_Admin{
 
 
     function __construct()
     {
-        parent::__construct();
+		parent::__construct();
+		
+		if(!$this->ion_auth->logged_in()){
+			redirect(site_url('admin/home/login'));
+		}
     }
 
     function index()
     {
-
+		
     }
 
     function login()
     {
+		$data = array();
 
+		$this->load->view('login_page', $data);
     }
 
     function logout()

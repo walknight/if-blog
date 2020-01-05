@@ -54,15 +54,19 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 //ROUTE FOR PAGE
-$route['page/(:num)'] 					= 'page/index/$1';
+//$route['page/(:num)'] 					= 'page/index/$1';
 
 //ROUTE FOR POST
 $route['post/page/(:num)'] 				= 'post/index/$1';
 $route['(:num)/(:num)/(:num)/(:any)'] 	= 'post/date/$1/$2/$3/$4';
 $route['post/(:any)'] 					= 'post/index/$1';
-$route['archive/(:any)']				= 'post/archive/$1';
+$route['archive/(:any)/(:any)']			= 'post/archive/$1/$2';
 $route['category/(:any)'] 				= 'post/category/$1';
 $route['tags/(:any)'] 					= 'post/tags/$1';
 $route['search'] 						= 'post/search';
+
+//ROUTE for admin
+$route['admin']                         = 'admin/home';
+$route['admin/dashboard']               = 'admin/home';
 
 

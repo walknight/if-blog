@@ -16,17 +16,17 @@ class Users_model extends CI_Model
 	// Public methods
 	public function get_user_display_name($user_id)
 	{
-		$this->db->select('username, display_name');
-		$this->db->where('userid', $user_id);
+		$this->db->select('username, first_name');
+		$this->db->where('id', $user_id);
 		$query = $this->db->get($this->_table['users'], 1);
 			
 		if ($query->num_rows() == 1)
 		{
 			$row = $query->row_array();
 
-			if ($row['display_name'] != "")
+			if ($row['first_name'] != "")
 			{
-				return $row['display_name'];
+				return $row['first_name'];
 			}
 			else
 			{

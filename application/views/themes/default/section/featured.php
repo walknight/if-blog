@@ -10,7 +10,7 @@
         <h3 class="mb-0">
         <a class="text-dark" href="#"><?=$list['title']?></a>
         </h3>
-        <div class="mb-1 text-muted"><?=strftime('%B %d, %Y', strtotime($list['date_posted'])); ?>  <?php echo lang('by'); ?> <?php echo $list['display_name']; ?></div>
+        <div class="mb-1 text-muted"><?=strftime('%B %d, %Y', strtotime($list['date_posted'])); ?>  <?php echo lang('by'); ?> <?php echo $list['first_name']; ?></div>
         <p class="card-text mb-auto"><?=word_limiter($list['head_article'], 4);?></p>
         <?php echo anchor(post_url($list['url_title'], $list['date_posted']),lang('read_more'),['class'=>'btn btn-primary btn-sm float-right']); ?>
     </div>

@@ -133,7 +133,8 @@ class Post extends CI_Controller
 
 	public function archive($year = null, $month = null)
 	{
-		if ($data['posts'] = $this->blog->get_posts_by_date($year, $month))
+		$data['posts'] = $this->blog->get_posts_by_date($year, $month);
+		if ($data['posts'] !== null)
 		{
 			foreach ($data['posts'] as $key => $post)
 			{
@@ -141,13 +142,14 @@ class Post extends CI_Controller
 				$data['posts'][$key]['display_name'] = $this->users->get_user_display_name($post['author']);
 			}
 
-			$this->_template['page']	= 'blog/archive';
+			$this->_template['page']	= 'post/archive';
 		}
 		else
 		{
-			$this->_template['page']	= 'errors/archive_no_posts';
+			$this->_template['page']	= 'post/no_posts';
 		}
-			
+		$this->output->append_title(lang('archives'));
+
 		$this->system_library->load($this->_template['page'], $data);
 	}
 
@@ -209,7 +211,9 @@ class Post extends CI_Controller
 			
 		if ($data['search_term'] != "")
 		{
-			if ($data['posts'] = $this->blog->get_posts_by_term($data['search_term']))
+			$data['posts'] = $this->blog->get_posts_by_term($data['search_term']);
+			
+			if ($data['posts'] !== null)
 			{
 				foreach ($data['posts'] as $key => $post)
 				{
@@ -221,14 +225,15 @@ class Post extends CI_Controller
 			}
 			else
 			{
-				$this->_template['page']	= 'errors/search_no_results';
+				$this->_template['page']	= 'post/search_no_results';
 			}
-				
+			$this->output->append_title(lang('search_results_for')." ".$data['search_term']);
+
 			$this->system_library->load($this->_template['page'], $data);
 		}
 		else
 		{
-			redirect('blog', 'refresh');
+			redirect('post', 'refresh');
 		}
 	}
 
