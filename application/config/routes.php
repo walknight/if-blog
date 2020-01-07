@@ -66,6 +66,7 @@ $route['tags/(:any)'] 					= 'post/tags/$1';
 $route['search'] 						= 'post/search';
 
 //ROUTE for admin
+$route['admin/auth']                    = 'admin/auth/login';
 $route['admin']                         = 'admin/home';
 $route['admin/dashboard']               = 'admin/home';
 

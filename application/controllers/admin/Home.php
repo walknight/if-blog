@@ -2,34 +2,37 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
-class Home extends MY_Admin{
+class Home extends MY_Controller{
 
+	protected $default_template = 'themes/admin';
 
     function __construct()
     {
 		parent::__construct();
-		
+	
+		$this->_init_template();
+
 		if(!$this->ion_auth->logged_in()){
-			redirect(site_url('admin/home/login'));
+			redirect(site_url('admin/auth/login'));
 		}
+	}
+	
+	public function _init_template()
+    {
+        $this->output->set_template('admin/masterpage');
+		$this->output->set_title('Administration Page');
     }
 
     function index()
-    {
-		
-    }
+    {		
 
-    function login()
-    {
-		$data = array();
 
-		$this->load->view('login_page', $data);
-    }
+	}
+	
+	function welcome()
+	{
 
-    function logout()
-    {
-
-    }
+	}
 
     function site_settings()
 	{
