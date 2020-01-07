@@ -25,21 +25,21 @@
         <?php endforeach; ?>
         <?php } ?>
 
-        <?php if ($posts_count > $posts_per_page): ?>
+        <?php if ($posts_count > $posts_per_page){ ?>
             <nav class="blog-pagination">
-                <?php if ($current_page < $pages_count): ?>
+                <?php if ($current_page < $pages_count){ ?>
                     <a class="btn btn-outline-primary" href="<?php echo site_url('post/page/' . $next_page); ?>"><?php echo lang('older_entries'); ?></a>
-                <?php  endif; ?>
+                <?php } ?>
 
                 <?php if ($current_page > 1){ ?>
                     <?php  if ($previous_page == 1){ ?>
                         <a class="btn btn-outline-primary" href="<?php echo site_url();?>"><?php echo lang('newer_entries'); ?></a>
-                    <?php  }else{ ?>
+                    <?php  } else { ?>
                         <a class="btn btn-outline-secondary disabled" href="<?php echo site_url('post/page/' . $previous_page); ?>"><?php echo lang('newer_entries'); ?></a>
                     <?php } ?>
                 <?php } ?>
             </nav>
-        <?php  endif; ?>
+        <?php  } ?>
 
     </div><!-- /.blog-main -->
 
@@ -48,11 +48,11 @@
         <div class="p-3">
         <h4 class="font-italic">Archives</h4>
         <ol class="list-unstyled mb-0">
-            <?php if (($archive = $this->archive_library->get_archive())): ?>
+            <?php if (($archive = $this->archive_library->get_archive())){ ?>
                 <?php foreach ($archive as $archive_item): ?>
                     <li><a href="<?php echo archive_url($archive_item['url']); ?>"><?php echo $archive_item['date_posted']; ?> (<?php echo $archive_item['posts_count']; ?>)</a></li>
                 <?php endforeach; ?>
-            <? endif; ?>
+            <?php } ?>
         </ol>
         </div>
 

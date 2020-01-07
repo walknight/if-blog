@@ -17,3 +17,6 @@ application/logs/*
 /vendor/
 application/cache/*
 ci_sessions/*
+.htaccess
+
+application/config/database.php
