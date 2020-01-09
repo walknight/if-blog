@@ -44,6 +44,7 @@
                     <?php echo form_close(); ?>
                 </div>
             </div>
+            <p class="text-center">&copy; <?php echo date('Y'); ?> IfCode.</p>
         </div>
     </div>
 </div>

@@ -69,5 +69,6 @@ $route['search'] 						= 'post/search';
 $route['admin/auth']                    = 'admin/auth/login';
 $route['admin']                         = 'admin/home';
 $route['admin/dashboard']               = 'admin/home';
+$route['admin/welcome']                 = 'admin/home/welcome';
 
 

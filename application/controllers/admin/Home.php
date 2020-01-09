@@ -25,13 +25,19 @@ class Home extends MY_Controller{
 
     function index()
     {		
+		$data = array();
 
+		$this->load->section('head','themes/admin/static/top_nav');
+		$this->load->section('menu','themes/admin/static/side_menu');
+		$this->load->view('themes/admin/layout/home', $data);
 
 	}
 	
 	function welcome()
 	{
-
+		echo "<pre>";
+		print_r($this->session->userdata());
+		echo "</pre>";
 	}
 
     function site_settings()

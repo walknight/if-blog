@@ -1,9 +1,3 @@
-<script src="<?=base_url('assets/themes/admin/js/jquery.min.js')?>"></script>
-<script src="<?=base_url('assets/themes/admin/js/bootstrap.bundle.min.js')?>"></script>
-<script src="<?=base_url('assets/themes/admin/js/datatables.min.js')?>"></script>
-<script src="<?=base_url('assets/themes/admin/js/moment.min.js')?>"></script>
-<script src="<?=base_url('assets/themes/admin/js/fullcalendar.min.js')?>"></script>
-<script src="<?=base_url('assets/themes/admin/js/bootadmin.min.js')?>"></script>
-
-</body>
-</html>
+<div class="text-center p-1">
+    <?=date('Y')?> &copy; If-Blog v1.0 - Created by <a style="text-decoration:none;" target="_blank" href="http://ifcode.my.id"> <span class="badge badge-info">IfCode</span> </a> - Page rendered in {elapsed_time}
+</div>

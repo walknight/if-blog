@@ -49,27 +49,35 @@ class Auth extends MY_Controller{
         {
             $this->_rules();
             
-            if ($this->form_validation->run() !== true)
-            {
-                $this->login();   
+            if ($this->form_validation->run() !== TRUE)
+            {	
+				$this->session->set_flashdata('error', validation_errors());
+				redirect('admin/auth/login', 'refresh');
+                //$this->login();   
             }
             else
             {
                 $username = $this->input->post('identity');
                 $password = $this->input->post('password');
                 $remember = (bool) $this->input->post('remember');
-                
+				
+				
                 if($this->ion_auth->login($username, $password, $remember))
                 {															
 					$this->session->set_flashdata('success', $this->ion_auth->messages());
-
-					if($this->session->group_name == 'admin')
+					$home_url = "";
+					
+					if($this->ion_auth->in_group('admin'))
 					{
-						redirect('admin/dashboard', 'refresh');
+						$home_url = site_url("admin/dashboard");
+						$this->session->set_userdata('home_url',$home_url);
+						redirect($home_url, 'refresh');
 					}
 					else
 					{
-						redirect('admin/welcome', 'refresh');
+						$home_url = site_url("admin/welcome");
+						$this->session->set_userdata('home_url',$home_url);
+						redirect($home_url, 'refresh');
 					}
 					
 					
@@ -77,14 +85,15 @@ class Auth extends MY_Controller{
                 else
                 {
                     $this->session->set_flashdata('error', $this->ion_auth->errors());
-				    redirect('admin/home/login', 'refresh'); 
+				    redirect('admin/auth/login', 'refresh'); 
                 }
             }
                             
         }
 		
 		// Check for remember_me data in retrieved session data
-        $check_remember = $this->session->remember_me;
+		$check_remember = $this->session->remember_me;
+		
         if (isset($check_remember) && $check_remember == "1") {
 
             redirect('admin/dashboard', 'refresh');
@@ -104,7 +113,7 @@ class Auth extends MY_Controller{
             $this->ion_auth->logout();
             $this->session->set_flashdata('success','You are logged out!');
             
-			redirect('admin/home/login');
+			redirect('admin/auth/login');
 		}
     }
 
@@ -145,7 +154,7 @@ class Auth extends MY_Controller{
 			}
 
 			// set any errors and display the form
-			$data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+			$data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
             
             $this->load->view($this->default_template.'/layout/auth/forgot_password', $data);
 		}
@@ -166,7 +175,7 @@ class Auth extends MY_Controller{
 					$this->ion_auth->set_error('forgot_password_email_not_found');
 				}
 
-				$this->session->set_flashdata('message', $this->ion_auth->errors());
+				$this->session->set_flashdata('error', $this->ion_auth->errors());
 				redirect("auth/forgot_password", 'refresh');
 			}
 
@@ -176,12 +185,12 @@ class Auth extends MY_Controller{
 			if ($forgotten)
 			{
 				// if there were no errors
-				$this->session->set_flashdata('message', $this->ion_auth->messages());
+				$this->session->set_flashdata('success', $this->ion_auth->messages());
 				redirect("admin/auth/login", 'refresh'); //we should display a confirmation page here instead of the login page
 			}
 			else
 			{
-				$this->session->set_flashdata('message', $this->ion_auth->errors());
+				$this->session->set_flashdata('error', $this->ion_auth->errors());
 				redirect("admin/auth/forgot_password", 'refresh');
 			}
 		}
@@ -273,7 +282,7 @@ class Auth extends MY_Controller{
 	public function _rules()
     {
         $this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
-		$this->form_validation->set_rules('username', str_replace(':', '', $this->lang->line('login_identity_label')), 'required');
+		$this->form_validation->set_rules('identity', str_replace(':', '', $this->lang->line('login_identity_label')), 'required');
 		$this->form_validation->set_rules('password', str_replace(':', '', $this->lang->line('login_password_label')), 'required');
 
     }

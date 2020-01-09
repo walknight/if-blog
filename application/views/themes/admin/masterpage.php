@@ -43,15 +43,24 @@
         <?php echo $this->load->get_section('menu'); ?>
 
         <?php echo $output; ?>
-
+                                
     </div>
 
-    <script src="https://bootadmin.net/js/jquery.min.js"></script>
-    <script src="https://bootadmin.net/js/bootstrap.bundle.min.js"></script>
-    <script src="https://bootadmin.net/js/datatables.min.js"></script>
-    <script src="https://bootadmin.net/js/moment.min.js"></script>
-    <script src="https://bootadmin.net/js/fullcalendar.min.js"></script>
-    <script src="https://bootadmin.net/js/bootadmin.min.js"></script>
+    <footer style=" background-color: #343a40;color:#fff;">
+        <div class="container">
+        <?php 
+            $this->load->section('footer','themes/admin/static/footer'); 
+            echo $this->load->get_section('footer'); 
+        ?>
+        </div>
+    <footer>
+
+    <script src="<?=base_url('assets/themes/admin/js/jquery.min.js')?>"></script>
+    <script src="<?=base_url('assets/themes/admin/js/bootstrap.bundle.min.js')?>"></script>
+    <script src="<?=base_url('assets/themes/admin/js/datatables.min.js')?>"></script>
+    <script src="<?=base_url('assets/themes/admin/js/moment.min.js')?>"></script>
+    <script src="<?=base_url('assets/themes/admin/js/fullcalendar.min.js')?>"></script>
+    <script src="<?=base_url('assets/themes/admin/js/bootadmin.min.js')?>"></script>
 
 </body>
 
