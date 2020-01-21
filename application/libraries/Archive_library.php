@@ -21,7 +21,7 @@ class Archive_library
 	{
 		$this->CI->db->select('COUNT(' . $this->CI->db->dbprefix . 'posts.id) AS posts_count, SUBSTRING(' . $this->CI->db->dbprefix . 'posts.date_posted, 1,7) AS archive_date FROM ' . $this->CI->db->dbprefix . 'posts WHERE ' . $this->CI->db->dbprefix . 'posts.status = \'published\' GROUP BY archive_date', FALSE);
 		$this->CI->db->order_by('archive_date', 'DESC');
-		$this->CI->db->limit($this->CI->system_library->settings['months_per_archive']);
+		$this->CI->db->limit($this->CI->cmscore_library->settings['months_per_archive']);
 		
 		$query = $this->CI->db->get();
 		

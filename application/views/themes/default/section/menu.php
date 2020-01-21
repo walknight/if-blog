@@ -8,7 +8,7 @@
         <?php endif; ?>
         </div>
         <div class="col-4 text-center">
-        <a class="blog-header-logo text-dark" href="<?=site_url()?>"><?=$this->system_library->settings['site_title']?></a>
+        <a class="blog-header-logo text-dark" href="<?=site_url()?>"><?=$this->_settings['site_title']?></a>
         </div>
         <div class="col-4 d-flex justify-content-end align-items-center">
         <form action="<?=site_url('search')?>" method="post">

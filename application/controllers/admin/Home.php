@@ -2,34 +2,26 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
-class Home extends MY_Controller{
-
-	protected $default_template = 'themes/admin';
+class Home extends MY_AdminController{
 
     function __construct()
     {
 		parent::__construct();
 	
-		$this->_init_template();
-
 		if(!$this->ion_auth->logged_in()){
 			redirect(site_url('admin/auth/login'));
 		}
 	}
-	
-	public function _init_template()
-    {
-        $this->output->set_template('admin/masterpage');
-		$this->output->set_title('Administration Page');
-    }
 
     function index()
     {		
 		$data = array();
 
-		$this->load->section('head','themes/admin/static/top_nav');
-		$this->load->section('menu','themes/admin/static/side_menu');
-		$this->load->view('themes/admin/layout/home', $data);
+		//load simple template
+		//but still can change themes for further
+		$this->load->section('head','themes/'.$this->_template['themes'].'/static/top_nav');
+		$this->load->section('menu','themes/'.$this->_template['themes'].'/static/side_menu');
+		$this->load->view('themes/'.$this->_template['themes'].'/layout/home', $data);
 
 	}
 	
@@ -42,8 +34,8 @@ class Home extends MY_Controller{
 
     function site_settings()
 	{
-		//cek apakah user sudah login dan diizinkan untuk masuk ke halaman ini
-		$this->auth->restrict();
+		//allowed user ?
+		$this->ion_auth->get_allowed();
 		
 		//load library
 		$this->load->library('form_validation');
@@ -51,13 +43,16 @@ class Home extends MY_Controller{
 		//load model
 		$this->load->model('setting_model','sm');
 		
-		$data['tpl_page'] = 'settings/form_settings';
 		$data['tpl_data'] = array(
 				'title' => "Site Setup > Settings Site Configuration ",
 				'form_action' => $this->url_admin."save_settings",
 				'return' => $this->sm->get_settings()
 		);
 		
+		$this->load->section('head','themes/'.$this->_template['themes'].'/static/top_nav');
+		$this->load->section('menu','themes/'.$this->_template['themes'].'/static/side_menu');
+		$this->load->view('themes/'.$this->_template['themes'].'/layout/form_settings', $data);
+
 		$this->load->view($this->templateAdmin.'template',$data);
 	}
 	

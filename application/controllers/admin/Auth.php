@@ -4,7 +4,7 @@
  * Class Auth
  */
 
-class Auth extends MY_Controller{
+class Auth extends MY_AdminController{
 
     protected $default_template = 'themes/admin';
 
@@ -12,21 +12,13 @@ class Auth extends MY_Controller{
     {
         parent::__construct();
 		
-		$this->_init_template();        
-		
 		$this->load->library(['ion_auth', 'form_validation']);
 		$this->load->helper(['url', 'language']);
 
 		$this->lang->load('auth');
-    }
 
-    /**
-	 * Initiation base template and base title
-	 */
-    public function _init_template()
-    {
-        $this->output->set_template('admin/masterpagelogin');
-		$this->output->set_title('Administration Page');
+		//overide the base masterpage to login masterpage
+		$this->output->set_template($this->_template['themes'].'/masterpagelogin');
     }
 
     /**

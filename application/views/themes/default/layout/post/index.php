@@ -16,7 +16,7 @@
             <p class="blog-post-meta"><?=strftime('%B %d, %Y', strtotime($post_item['date_posted'])); ?>  <?php echo lang('by'); ?> <?php echo $post_item['display_name']; ?></p>
             <?php echo $post_item['head_article']; ?>
             <?php echo anchor(post_url($post_item['url_title'], $post_item['date_posted']),lang('read_more'),['class'=>'btn btn-primary btn-sm float-right']); ?>
-            <?php if ($links = $this->system_library->generate_social_bookmarking_links(post_url($post_item['url_title'], $post_item['date_posted']), $post_item['title'])): ?>
+            <?php if ($links = $this->cmscore_library->generate_social_bookmarking_links(post_url($post_item['url_title'], $post_item['date_posted']), $post_item['title'])): ?>
                 <p><?php echo lang('add_to'); ?> <?php echo $links; ?></p>
             <?php endif; ?>
         </div><!-- /.blog-post -->

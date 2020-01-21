@@ -1,11 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Post extends CI_Controller
-{
-	// Protected or private properties
-	protected $_template;
-	
+class Post extends MY_Controller
+{	
 	// Constructor
 	public function __construct()
 	{
@@ -23,7 +20,7 @@ class Post extends CI_Controller
 		$this->lang->load('posts_lang');
 		
 		//$this->load->library('securimage_library');
-		$this->_template['themes'] = $this->system_library->template;
+		//$this->_template['themes'] = $this->cmscore_library->template;
 	
     }
 
@@ -73,11 +70,16 @@ class Post extends CI_Controller
 		{
 			$this->_template['page'] = 'post/no_posts';
 		}
-			
-		$this->load->section('highlight', 'themes/'.$this->_template['themes'].'/section/highlight',$sticky);
-		$this->load->section('featured', 'themes/'.$this->_template['themes'].'/section/featured', $featured);
-
-		$this->system_library->load($this->_template['page'], $data);
+		
+		//set section of the template
+		$load_section = array(
+			'menu' => 'themes/'.$this->_template['themes'].'/section/menu',
+			'footer' => 'themes/'.$this->_template['themes'].'/section/footer', 
+			'highlight' => array( 'path' => 'themes/'.$this->_template['themes'].'/section/highlight', 'data' => $sticky),
+			'featured' => array( 'path' => 'themes/'.$this->_template['themes'].'/section/featured', 'data' => $featured)
+		);
+		
+		$this->load_template($this->_template['page'], $data, $load_section);
 
 	}
 
@@ -128,7 +130,13 @@ class Post extends CI_Controller
 			show_404();
 		}
 			
-		$this->system_library->load($this->_template['page'], $data);
+		//set section of the template
+		$load_section = array(
+			'menu' => 'themes/'.$this->_template['themes'].'/section/menu',
+			'footer' => 'themes/'.$this->_template['themes'].'/section/footer', 
+		);
+
+		$this->load_template($this->_template['page'], $data, $load_section);
 	}
 
 	public function archive($year = null, $month = null)
@@ -150,7 +158,14 @@ class Post extends CI_Controller
 		}
 		$this->output->append_title(lang('archives'));
 
-		$this->system_library->load($this->_template['page'], $data);
+		//set section of the template
+		$load_section = array(
+			'menu' => 'themes/'.$this->_template['themes'].'/section/menu',
+			'footer' => 'themes/'.$this->_template['themes'].'/section/footer', 
+		);
+
+		
+		$this->load_template($this->_template['page'], $data, $load_section);
 	}
 
 	public function category($url_name = null)
@@ -177,10 +192,13 @@ class Post extends CI_Controller
 		{
 			show_404();
 		}
-		
-		
-			
-		$this->system_library->load($this->_template['page'], $data);
+		//set section of the template
+		$load_section = array(
+			'menu' => 'themes/'.$this->_template['themes'].'/section/menu',
+			'footer' => 'themes/'.$this->_template['themes'].'/section/footer', 
+		);
+
+		$this->load_template($this->_template['page'], $data, $load_section);
 	}
 	
 	public function tags($tag_name = null)
@@ -201,8 +219,13 @@ class Post extends CI_Controller
 		{
 			show_404();
 		}
-		
-		$this->system_library->load($this->_template['page'], $data);
+		//set section of the template
+		$load_section = array(
+			'menu' => 'themes/'.$this->_template['themes'].'/section/menu',
+			'footer' => 'themes/'.$this->_template['themes'].'/section/footer', 
+		);
+
+		$this->load_template($this->_template['page'], $data, $load_section);
 	}
 
 	public function search()
@@ -229,7 +252,13 @@ class Post extends CI_Controller
 			}
 			$this->output->append_title(lang('search_results_for')." ".$data['search_term']);
 
-			$this->system_library->load($this->_template['page'], $data);
+			//set section of the template
+			$load_section = array(
+				'menu' => 'themes/'.$this->_template['themes'].'/section/menu',
+				'footer' => 'themes/'.$this->_template['themes'].'/section/footer', 
+			);
+
+			$this->load_template($this->_template['page'], $data, $load_section);
 		}
 		else
 		{
@@ -246,7 +275,7 @@ class Post extends CI_Controller
 			$this->form_validation->set_rules('nickname', 'lang:nickname', 'required|max_length[50]|xss_clean');
 			$this->form_validation->set_rules('email', 'lang:email', 'required|valid_email');
 			
-			if ($this->system_library->settings['enable_captcha'] == 1)
+			if ($this->_settings['enable_captcha'] == 1)
 			{
 				$this->form_validation->set_rules('confirmation_code', 'lang:confirmation_code', 'required|callback_valid_confirmation_code');
 			}
