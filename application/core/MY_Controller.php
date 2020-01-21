@@ -6,6 +6,7 @@ class MY_Controller extends CI_Controller {
 	public $notif; //var for notification alert
 	public $_template; //var for themes
 	public $_settings; //var site settings
+	public $site_status;
 
 	public function __construct() {
 		parent::__construct();
@@ -22,16 +23,22 @@ class MY_Controller extends CI_Controller {
 
 		//get settings
 		$this->_settings = $this->cmscore_library->settings;
+		
 		//load active template
 		//load base tempalte and default title
 		$this->_template['themes'] = $this->cmscore_library->getActiveTemplate();
-
-		$masterpage = $this->_template['themes'].'/base_template';
-		$title = $this->_settings['site_title'];
-		
-		//set masterpage template and default title
-		$this->_init_template($masterpage, $title);
-		
+		//check site status
+		$this->site_status = $this->cmscore_library->check_site_status();
+		//check if site is maintenance
+		if($this->site_status !== true){			
+			$this->load_maintenance($this->_settings['offline_reason']);
+		} else {
+			$masterpage = $this->_template['themes'].'/base_template';
+			$title = $this->_settings['site_title'];
+			
+			//set masterpage template and default title
+			$this->_init_template($masterpage, $title);
+		}
         //enable profiler
         //$this->output->enable_profiler(TRUE);
 	}
@@ -73,17 +80,19 @@ class MY_Controller extends CI_Controller {
 		}
 		else
 		{
-			if ($admin == TRUE)
+			if($section != NULL && is_array($section))
 			{
-				$this->CI->load->view('admin/layout/'.$page_name, $data);
+				foreach($section as $key => $value):
+					
+					if(is_array($value)){
+						$this->load->section($key, $value['path'], $value['data']);
+					} else {
+						$this->load->section($key, $value);
+					}
+				endforeach;
 			}
-			else
-			{
-				$this->CI->load->section('menu', 'themes/'.$this->template.'/section/menu');
-				$this->CI->load->section('footer', 'themes/'.$this->template.'/section/footer'); 
-
-				$this->CI->load->view('themes/' . $this->template . '/layout/'.$page_name, $data);
-			}
+			
+			$this->CI->load->view('themes/' . $this->template . '/layout/'.$page_name, $data);
 		}
 	}
 	
@@ -92,7 +101,18 @@ class MY_Controller extends CI_Controller {
 		$this->load->section('menu', 'themes/'.$this->_template['themes'].'/section/menu');
 		$this->load->section('footer', 'themes/'.$this->_template['themes'].'/section/footer'); 
 
-		$this->CI->load->view('themes/' . $this->_template['themes'] . '/layout/' . $page, $data);
+		$this->load->view('themes/' . $this->_template['themes'] . '/layout/' . $page, $data);
+	}
+
+	public function load_maintenance($reason)
+	{
+		$data['reason'] = $reason;
+		$data['title'] = $this->_settings['site_title'].' - Site Maintenance';
+		$this->output->unset_template();
+
+		echo $this->load->view('themes/' . $this->_template['themes'] . '/maintenance_view', $data, TRUE);
+		
+		exit;
 	}
 
 }

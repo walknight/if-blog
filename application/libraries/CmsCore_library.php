@@ -83,7 +83,7 @@ class CmsCore_library
 	public function check_site_status()
 	{
 		$this->CI->db->select('name, value');
-		$this->CI->db->where('name', 'enabled');
+		$this->CI->db->where('name', 'site_enabled');
 		
 		$query = $this->CI->db->get($this->_table['settings'], 1);
 		
@@ -93,11 +93,12 @@ class CmsCore_library
 			
 			if ($result['value'] == 0)
 			{
-				$data['offline_reason'] = $this->settings['offline_reason'];
-				
-				$this->CI->load->view('admin/layout/pages/offline', $data);
-				die();
-			}
+                return false;
+            }
+            else
+            {
+                return true;
+            }
 		}
 	}
 	
