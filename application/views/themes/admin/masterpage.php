@@ -41,7 +41,7 @@
     <div class="d-flex">
         
         <?php echo $this->load->get_section('menu'); ?>
-
+        
         <?php echo $output; ?>
                                 
     </div>
@@ -61,6 +61,33 @@
     <script src="<?=base_url('assets/themes/admin/js/moment.min.js')?>"></script>
     <script src="<?=base_url('assets/themes/admin/js/fullcalendar.min.js')?>"></script>
     <script src="<?=base_url('assets/themes/admin/js/bootadmin.min.js')?>"></script>
+    
+    <?php
+    foreach($js as $file):
+    ?>
+    <script src="<?php echo $file; ?>"></script>
+    <?php
+        endforeach;
+        echo "\n";
+    ?>
+
+    <?php
+    if(isset($script))
+    {
+        foreach($script as $value):
+        echo '<script type="text/javascript">';
+        echo $value;
+        echo '</script>';
+        endforeach;
+    }
+
+    if(isset($embed_script))
+    {
+        echo '<script type="text/javascript">';
+        echo $embed_script;
+        echo '</script>';
+    }
+    ?>
 
 </body>
 

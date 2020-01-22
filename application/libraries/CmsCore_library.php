@@ -42,7 +42,12 @@ class CmsCore_library
 		
 		if ($query->num_rows() == 1)
 		{
-			$row = $query->row_array();
+			$row = $query->row_array();			
+		}
+		else
+		{
+			//set variable $row to choose default folder
+			$row['path'] = 'default';
 		}
 		
 		return $row['path'];

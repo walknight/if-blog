@@ -60,6 +60,7 @@ $lang['create_user_fname_label']                       = 'Nama Awal:';
 $lang['create_user_lname_label']                       = 'Nama Akhir:';
 $lang['create_user_company_label']                     = 'Nama Perusahaan:';
 $lang['create_user_identity_label']                    = 'Identitas:';
+$lang['create_user_username_label']                    = 'Username:';
 $lang['create_user_email_label']                       = 'Surel:';
 $lang['create_user_phone_label']                       = 'Telepon:';
 $lang['create_user_password_label']                    = 'Kata Sandi:';

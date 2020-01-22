@@ -1765,6 +1765,30 @@ class Ion_auth_model extends CI_Model
 	}
 
 	/**
+	 * Permission
+	 * 
+	 * @param int|string|null $id
+	 *
+	 * @return object
+	 * @author Ifuk Permana
+	 */
+	public function get_permission($group_id = NULL)
+	{
+		$this->trigger_events('get_permission');
+
+		$this->db->select('permission');
+
+		if (isset($group_id))
+		{
+			$this->db->where($this->tables['groups'].'.id', $group_id);
+		}
+
+		$this->db->limit(1);
+		
+		return $this->db->get($this->tables['groups'])->row();
+	}
+
+	/**
 	 * update
 	 *
 	 * @param int|string $id

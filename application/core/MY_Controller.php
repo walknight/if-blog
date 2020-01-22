@@ -121,11 +121,13 @@ class MY_AdminController extends CI_Controller
 {
 	public $_settings;
 	public $_template;
+	public $_user_permission;
 
 	public function __construct()
 	{
 		parent::__construct();
-
+		
+		//loading some library
 		$lib_array = array('user_agent','ion_auth','cmscore_library');
 		$this->load->library($lib_array);
 
@@ -137,10 +139,16 @@ class MY_AdminController extends CI_Controller
 
 		$masterpage = $this->_template['themes'].'/masterpage';
 		$title = $this->_settings['site_title'];
+
+		//get user permission
+		//if login get permission group
+        $get_permission = $this->ion_auth->get_permission($this->session->group_id);
+		//set global class var user permission
+		$this->_user_permission = json_decode($get_permission->permission);		
 		
-		//set masterpage template and default title
+		//set masterpage template and default title		
 		$this->_init_admin_template($masterpage, $title);
-		
+		//and we go...
 
 	}
 	/**
