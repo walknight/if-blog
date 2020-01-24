@@ -61,12 +61,12 @@
                         //check permission user
                         if(in_array('viewUser', $this->_user_permission)) {
                             $attr_btn_view = 'class="btn btn-sm btn-icon btn-primary" title="View"';
-                            echo anchor(site_url('users/view/'.$user->id),'<i class="fa fa-eye"></i>', $attr_btn_view);
+                            echo anchor(site_url('admin/users/view/'.$user->id),'<i class="fa fa-eye"></i>', $attr_btn_view);
                             echo "\n\t\t\t\t\t\t";
                         } 
                         if(in_array('updateUser', $this->_user_permission)){
                             $attr_btn_edit = 'class="btn btn-sm btn-icon btn-info" title="Edit"';
-                            echo anchor(site_url('users/edit/'.$user->id),'<i class="fa fa-pencil-alt"></i>', $attr_btn_edit);
+                            echo anchor(site_url('admin/users/edit/'.$user->id),'<i class="fa fa-pencil-alt"></i>', $attr_btn_edit);
                             echo "\n\t\t\t\t\t\t";
                         }
                         if(in_array('deleteUser', $this->_user_permission)){

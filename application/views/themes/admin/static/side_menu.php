@@ -9,7 +9,7 @@
             </a>
             <ul id="mod_page" class="list-unstyled collapse">
                 <li><a href="<?=site_url('admin/pages/new')?>">New Page</a></li>
-                <li><a href="<?=site_url('admin/page/')?>">List Page</a></li>                                
+                <li><a href="<?=site_url('admin/pages/')?>">List Page</a></li>                                
             </ul>
         </li>
         <li>

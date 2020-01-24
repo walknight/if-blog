@@ -13,8 +13,6 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class Posts extends MY_AdminController{
 	
-	var $title = "Admin Posts";
-	
 	function __construct()
 	{
 		parent::__construct();
@@ -41,15 +39,22 @@ class Posts extends MY_AdminController{
 	
 	function index()
 	{
+		//get start list value 
+		$start = $this->uri->segment(4,0);
+		
         $paging['base_url'] = site_url('admin/posts/index/');
         $paging['total_rows'] = $this->post_model->getAll()->num_rows();
         $paging['uri_segment'] = 4;
         $paging['per_page'] = 10;
         $this->pagination->initialize($paging);
-        
-		$data['post_list'] = $this->post_model->getAll('','date_posted desc',$paging['per_page'],$this->uri->segment(4,0));
-	    
-        $this->output->append_title('User List');
+		
+		//prepare data for view
+		$data['post_list'] = $this->post_model->getAll('','date_posted desc', $paging['per_page'], $start );
+		$data['pagination'] = $this->pagination->create_links();
+		$data['total_rows'] = $paging['total_rows'];
+		$data['start'] = $start;
+
+		$this->output->append_title('Post List');
         
         $this->load->section('head','themes/'.$this->_template['themes'].'/static/top_nav');
         $this->load->section('menu','themes/'.$this->_template['themes'].'/static/side_menu');
@@ -59,7 +64,7 @@ class Posts extends MY_AdminController{
         $this->load->view('themes/'.$this->_template['themes'].'/layout/post/list_post', $data);
 	}
 	
-	function create()
+	function new()
 	{
 		//cek apakah user sudah login dan diizinkan untuk masuk ke halaman ini
 		$this->auth->restrict();
@@ -279,4 +284,4 @@ class Posts extends MY_AdminController{
 }
 
 /* End of file admin.php */
-/* Location: ./system/application/module/article/controller/admin.php */
+/* Location: ./system/application/admin/Posts.php */
