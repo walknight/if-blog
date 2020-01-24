@@ -1,6 +1,17 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+/**
+ * @author Ifuk Permana
+ * @copyright 2019
+ * @script Users Admin Controller
+ * --------------------------------------------------------------------------
+ *  Administration Users
+ * --------------------------------------------------------------------------
+ *		Module Controller Admin for Users
+ * 
+ */
+
 class Users extends MY_AdminController {
 	
     function __construct()

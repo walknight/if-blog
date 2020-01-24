@@ -317,7 +317,41 @@ class Post_model extends CI_Model
 			return $result;
 		}
 	}
+
+	/** 
+	* Get and return all records from DB table.
+	* 
+	* @access public 
+	* @param string
+	* @return object
+	*/ 
+	public function getAll($field = "", $order_by = "",$limit="",$offset="")
+	{
+		if($order_by != "")
+		{
+			$this->db->order_by($order_by);
+		}
+		if(is_array($field) AND $field != "")
+		{
+			$this->db->select($field);
+		}
+		
+		if($limit != "")
+		{
+			$this->db->limit($limit,$offset);
+		}
+		$result = $this->db->get($this->_table['posts']);
+		
+		if($result->num_rows() > 0)
+		{
+			return $result;
+		}
+		else 
+		{
+			return FALSE;
+		}
+	}
 }
 
 /* End of file blog_model.php */
-/* Location: ./application/modules/blog_model.php */
+/* Location: ./application/models/Posts_model.php */

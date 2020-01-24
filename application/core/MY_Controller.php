@@ -144,7 +144,7 @@ class MY_AdminController extends CI_Controller
 		//if login get permission group
         $get_permission = $this->ion_auth->get_permission($this->session->group_id);
 		//set global class var user permission
-		$this->_user_permission = json_decode($get_permission->permission);		
+		$this->_user_permission = json_decode($get_permission->permission);	
 		
 		//set masterpage template and default title		
 		$this->_init_admin_template($masterpage, $title);

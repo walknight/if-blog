@@ -75,5 +75,9 @@ $lang['other_logout']					= "Logout";
 $lang['footer_powered_by']				= "Powered by";
 $lang['footer_template_by']				= "Website template by";
 
+
+// Admin
+$lang['index_create_post_new']          = "Create New Post";
+
 /* End of file general_lang.php */
 /* Location: ./application/modules/blog/language/english/general_lang.php */
