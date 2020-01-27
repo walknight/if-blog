@@ -1,4 +1,15 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+/**
+ * @author Ifuk Permana
+ * @application if-blog
+ * @copyright 2019
+ * --------------------------------------------------------------------------
+ *  Comment Model
+ * --------------------------------------------------------------------------
+ * Model for Comment
+ * 
+ */
 
 class Comments_model extends CI_Model
 {
@@ -13,84 +24,175 @@ class Comments_model extends CI_Model
 		$this->_table = $this->config->item('database_tables');
 	}
 
-	// Public methods
-	public function get_comments($post_id)
+	/**
+     * get_comments
+     * 
+     * get's all comments with 1|0 in modded field
+     *
+     * @access  public
+     * @author  Enliven Applications
+     * @version 3.0
+     * 
+     * @param  int $modded takes 0|1 to pass to the db
+     * 
+     * @return  array
+     */
+	public function get_comments($modded = 0)
 	{
-		$this->db->select('id, user_id, author, author_email, author_website, content, date');
-		$this->db->where('post_id', $post_id);
-		$this->db->order_by('id', 'ASC');
-		$query = $this->db->get($this->_table['comments']);
-			
-		if ($query->num_rows() > 0)
+		// get the comments and join on the post so we
+		// can get it's name
+		$comments = $this->db
+						->select('comments.*, posts.title as post_title')
+						->where('comments.modded', $modded)
+						->join($this->_table['posts'], "posts.id = comments.post_id")
+						->get($this->_table['comments'])
+						->result_array();
+
+		// there's two ways the comments come
+		// out of the database.
+		foreach ($comments as &$comment) 
 		{
-			return $query->result_array();
-		}
-	}
-	
-	public function get_latest_comments($number = 10, $offset = 0)
-	{
-		$this->db->select('comments.id, comments.user_id, comments.author, comments.author_email, comments.author_website, comments.content, comments.date, posts.title, posts.url_title, posts.date_posted');
-		$this->db->from($this->_table['comments'] . ' comments');
-		$this->db->join($this->_table['posts'] . ' posts', 'comments.post_id = posts.id');
-		$this->db->order_by('comments.id', 'DESC');
-		$this->db->limit($number, $offset);
-		
-		$query = $this->db->get();
-			
-		if ($query->num_rows() > 0)
-		{
-			return $query->result_array();
-		}
-	}
-	
-	public function get_comment_author($id)
-	{
-		$this->db->select('user_id, author');
-		$this->db->where('id', $id);
-		
-		$query = $this->db->get($this->_table['comments'], 1);
-		
-		if ($query->num_rows() == 1)
-		{
-			$row = $query->row_array();
-			
-			if ($row['user_id'] == "")
+			// an unregistered user
+			if ($comment['author'])
 			{
-				return $row['author'];
+				// concat author and email and assign to display_name
+				$comment['display_name'] = $comment['author'] . ' [' . $comment['author_email'] . ']';
+			}
+			// or a registered user
+			else
+			{
+				// concat user_id and [Registered User](from the language files)
+				// assign to display_name
+				$comment['display_name'] = $this->ion_auth->get_db_display_name($comment['user_id']) . ' [' . lang('comments_reg_user') . ']';
 			}
 		}
+		// send it on lil doggy
+		return $comments;
 	}
 
-	public function create_comment($id)
+	/**
+     * get_comment
+     * 
+     * get's the selected comment
+     *
+     * @access  public
+     * @author  Enliven Applications
+     * @version 3.0
+     * 
+     * @param  int $id the comment id in the db
+     * 
+     * @return  array
+     */
+	public function get_comment($id)
 	{
-		if ($this->session->userdata('logged_in') == TRUE)
+		// get the comments and join on the post so we
+		// can get it's name
+		$comment = $this->db
+						->select('comments.*, posts.title as post_title')
+						->where('comments.id', $id)
+						->join($this->_table['posts'], "posts.id = comments.post_id")
+						->limit(1)
+						->get($this->_table['comments'])
+						->row_array();
+
+		// there's two ways the comments come
+		// out of the database.
+		
+		// an unregistered user
+		if ($comment['author'])
 		{
-			$data = array
-						(
-							'post_id' => $id,
-							'user_id' => $this->session->userdata('user_id'),
-							'author_ip' => $_SERVER['REMOTE_ADDR'],
-							'content' => $this->input->post('comment'),
-							'date' => date('Y-m-d H:i:d')
-						);
+			// concat author and email and assign to display_name
+			$comment['display_name'] = $comment['author'] . ' [' . $comment['author_email'] . ']';
 		}
+		// or a registered user
 		else
 		{
-			$data = array
-						(
-							'post_id' => $id,
-							'author' => $this->input->post('nickname'),
-							'author_email' => $this->input->post('email'),
-							'author_website' => $this->input->post('website'),
-							'author_ip' => $_SERVER['REMOTE_ADDR'],
-							'content' => $this->input->post('comment'),
-							'date' => date('Y-m-d H:i:d')
-						);
+			// concat user_id and [Registered User](from the language files)
+			// assign to display_name
+			$comment['display_name'] = $this->ion_auth->get_db_display_name($comment['user_id']) . ' [' . lang('comments_reg_user') . ']';
 		}
 
-		$this->db->insert($this->_table['comments'], $data);
+		// return it
+		return $comment;
+	}
+
+	/**
+     * hide_comment
+     * 
+     * hides the selected comment.  modded = 1
+     *
+     * @access  public
+     * @author  Enliven Applications
+     * @version 3.0
+     * 
+     * @param  int $id the comment id in the db
+     * 
+     * @return  bool
+     */
+	public function hide_comment($id)
+	{
+		// returns true|false on success|fail
+		return $this->db->where('id', $id)->update($this->_table['comments'], ['modded' => 1]);
+	}
+
+	/**
+     * accept_comment
+     * 
+     * shows the selected comment. modded = 0
+     *
+     * @access  public
+     * @author  Enliven Applications
+     * @version 3.0
+     * 
+     * @param  int $id the comment id in the db
+     * 
+     * @return  bool
+     */
+	public function accept_comment($id)
+	{
+		// returns true|false on success|fail
+		return $this->db->where('id', $id)->update($this->_table['comments'], ['modded' => 0]);
+	}
+
+	/**
+     * update_comment
+     * 
+     * updates the selected comment
+     *
+     * @access  public
+     * @author  Enliven Applications
+     * @version 3.0
+     * 
+     * @param  int $id the comment id in the db
+     * @param  array $data the incoming new data
+     * 
+     * @return  bool
+     */
+	public function update_comment($id, $data)
+	{
+		// returns true|false on success|fail
+		return $this->db->where('id', $id)->update($this->_table['comments'], $data);
+	}
+
+	/**
+     * remove_comment
+     * 
+     * deletes the selected comment. 
+     *
+     * @access  public
+     * @author  Enliven Applications
+     * @version 3.0
+     * 
+     * @param  int $id the comment id in the db
+     * 
+     * @return  bool
+     */
+	public function remove_comment($id)
+	{
+		// returns true|false on success|fail
+		return $this->db->delete($this->_table['comments'], ['id' => $id]);
 	}
 }
 
 /* End of file comments_model.php */
-/* Location: ./application/modules/blog/models/comments_model.php */
+/* Location: ./application/models/Comments_model.php */

@@ -113,4 +113,4 @@ $lang['form_failed_update_post']        = "Failed update post. Please call admin
 
 
 /* End of file posts_lang.php */
-/* Location: ./application/modules/blog/language/english/posts_lang.php */
+/* Location: ./application/language/english/posts_lang.php */

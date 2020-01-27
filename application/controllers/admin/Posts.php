@@ -316,5 +316,5 @@ class Posts extends MY_AdminController{
 	
 }
 
-/* End of file admin.php */
-/* Location: ./system/application/admin/Posts.php */
+/* End of file Posts.php */
+/* Location: ./application/controller/admin/Posts.php */

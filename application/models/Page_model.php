@@ -14,11 +14,14 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  
  class Page_model extends CI_Model{
 	
-	private $_table = "pages";
-	
+	// Protected or private properties
+	protected $_table;
+
 	function __construct()
 	{
 		parent::__construct();
+
+		$this->_table = $this->config->item('database_tables');
 			
 	}
 	
@@ -29,18 +32,26 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 	* @param string
 	* @return object
 	*/ 
-	public function getAll($field = "", $order_by = "",$limit="",$offset="")
+	public function getAll($field = "", $order_by = "", $limit="", $offset="")
 	{
 		if($order_by != "")
 		{
 			$this->db->order_by($order_by);
 		}
-		if(is_array($field) AND $field != "")
+
+		if($field != "")
 		{
 			$this->db->select($field);
 		}
 
-		$result = $this->db->get($this->_table,$limit,$offset);
+		if($limit != "")
+		{
+			$this->db->limit($limit,$offset);
+		}
+
+		$this->db->join($this->_table['users'] . ' users', 'pages.author = users.id');
+
+		$result = $this->db->get($this->_table['pages']);
 		
 		if($result->num_rows() > 0)
 		{
@@ -66,11 +77,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 		{
 			$this->db->order_by($order_by);
 		}
-		$result = $this->db->get_where($this->_table, $params);
+		$result = $this->db->get_where($this->_table['pages'], $params);
 		
 		return $result;
 	}
-	
 	
 	/** 
 	* Get and return specified record from DB table by id.
@@ -81,11 +91,11 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 	*/ 	
 	public function get($id)
 	{
-		$result = $this->db->get_where($this->_table, array('id' => $id));
+		$result = $this->db->get_where($this->_table['pages'], array('id' => $id));
 		
 		if($result->num_rows() > 0)
 		{
-			return $result->row();
+			return $result->row_array();
 		}
 		else
 		{
@@ -104,7 +114,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 	public function add($params)
 	{
 		//insert into data_content table
-		$this->db->insert($this->_table, $params);
+		$this->db->insert($this->_table['pages'], $params);
 		$query = $this->db->insert_id();
 			
 		if($query > 0)
@@ -127,7 +137,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 	*/ 
 	public function update($id, $params)
 	{
-		$this->db->update($this->_table, $params, array('id' => $id));
+		$this->db->update($this->_table['pages'], $params, array('id' => $id));
 		return $this->db->affected_rows();
 	}
 	
@@ -141,7 +151,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 	*/ 
 	public function delete($params)
 	{
-		$this->db->delete($this->_table, $params);
+		$this->db->delete($this->_table['pages'], $params);
 		return $this->db->affected_rows();
 	}
 	
@@ -156,8 +166,8 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 	public function get_max_number_order($table="")
 	{
 		$this->db->select_max('ordering');
-		if($table = "")
-			$query = $this->db->get($this->_table);
+		if($table == "")
+			$query = $this->db->get($this->_table['pages']);
 		else
 			$query = $this->db->get($table);
 		
