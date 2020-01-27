@@ -29,7 +29,14 @@
     <link rel="stylesheet" href="<?=base_url('assets/themes/admin/css/datatables.min.css')?>">
     <link rel="stylesheet" href="<?=base_url('assets/themes/admin/css/fullcalendar.min.css')?>">
     <link rel="stylesheet" href="<?=base_url('assets/themes/admin/css/bootadmin.min.css')?>">
+    <?php
+    
+    foreach($css as $file){
+        echo "\n\t\t";
+        ?><link rel="stylesheet" href="<?php echo $file; ?>" type="text/css" /><?php
+    } echo "\n\t";
 
+    ?>
     <title><?=$title?></title>
 
 </head>

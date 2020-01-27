@@ -351,6 +351,147 @@ class Post_model extends CI_Model
 			return FALSE;
 		}
 	}
+
+	/** 
+	* get id tags
+	* 
+	* @access public
+	* @param array
+	* @return array id tags
+	*/
+	function get_id_tags($tag)
+	{
+		$this->db->select('id');
+		$this->db->where('name', $tag);
+		
+		$query = $this->db->get($this->_table['tags'], 1);
+		
+		if ($query->num_rows() == 1)
+		{
+			$result = $query->row_array();
+			
+			return $result['id'];
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	/** 
+	* Add new record to DB table.
+	* 
+	* @access public
+	* @param array
+	* @return int
+	*/ 
+	public function add($params)
+	{
+		//insert into data_content table
+		$this->db->insert($this->_table['posts'], $params);
+		$query = $this->db->insert_id();
+			
+		if($query > 0)
+		{
+			return $query;
+		} else {
+			return false;
+		}
+	}
+
+	/** 
+	* Update existing record in DB table.
+	* 
+	* @access public 
+	* @param int
+	* @param array
+	* @return bool
+	*/ 
+	public function update($id, $params)
+	{
+		$this->db->update($this->_table, $params, array('id' => $id));
+		return $this->db->affected_rows();
+	}
+	
+	
+	/** 
+	* Delete specified records from the DB table.
+	* 
+	* @access public 
+	* @param array
+	* @return bool
+	*/ 
+	public function delete($params)
+	{
+		$this->db->delete($this->_table['posts'], $params);
+
+		//remove post from linked tags
+		$this->db->delete($this->_table['tags_to_posts'], array('post_id' => $params['id']));
+
+		return $this->db->affected_rows();
+	}
+
+	/** 
+	* Parse tag commas to array
+	* 
+	* @access public
+	* @param string
+	* @return array
+	*/ 
+	public function parse_tags($tags)
+	{
+		$tags = str_replace(' ', '', $tags);
+		$tags = explode(',', $tags);
+		
+		return $tags;
+	}
+
+	/** 
+	* Add new tag for post
+	* 
+	* @access public
+	* @param array
+	* @return NULL
+	*/ 
+	function add_tags($tags, $post_id)
+	{
+		foreach ($tags as $tag)
+		{
+			$tag_id = $this->get_id_tags($tag);
+			
+			if ($tag_id == FALSE) 
+			{
+				$data = array
+				(
+					'name' => $tag
+				);
+					
+				$this->db->insert($this->_table['tags'], $data);
+				
+				$tag_id = $this->db->insert_id();
+			}
+
+			$this->add_tag_to_post($tag_id, $post_id);
+		}
+	}
+
+	/** 
+	* Add tags to post
+	* 
+	* @access public
+	* @param array
+	* @return array id tags
+	*/
+	function add_tag_to_post($tag_id,$post_id)
+	{
+		$data = array
+		(
+			'tag_id' => $tag_id,
+			'post_id' => $post_id
+		);
+					
+		$this->db->insert($this->_table['tags_to_posts'], $data);
+	}
 }
 
 /* End of file blog_model.php */

@@ -106,7 +106,9 @@
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </div>
                 <input type="hidden" id="id_user" name="id_user" value="">
+                <?php if($this->config->item('csrf_protection')){ ?>
                 <input type="hidden" id="<?=$csrf['name'];?>" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
+                <?php } ?>
             </form>            
         </div>
     </div>

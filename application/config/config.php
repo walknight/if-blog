@@ -526,3 +526,20 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+
+
+/*
+|--------------------------------------------------------------------------
+| asset folder
+|--------------------------------------------------------------------------
+| merupakan default file path dari asset folder
+|
+*/
+define('ASSETPATH','assets/');
+
+$config['images'] = ASSETPATH."images/";
+$config['css'] = ASSETPATH."css/";
+$config['js'] = ASSETPATH."js/";
+$config['vendor'] = ASSETPATH."vendor/";
+$config['upload'] = BASEPATH."upload/";

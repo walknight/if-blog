@@ -78,6 +78,37 @@ $lang['footer_template_by']				= "Website template by";
 
 // Admin
 $lang['index_create_post_new']          = "Create New Post";
+$lang['index_active_link']              = "published";
+$lang['index_inactive_link']            = "draft";
+$lang['index_success_delete_post']            = "Delete post success";
+$lang['index_failed_delete_post']            = "Failed to delet this post. Please call administrator.";
+$lang['form_title_post']                = "Title Post";
+$lang['form_url_post']                  = "URL Post";
+$lang['form_content_area_post']         = "Content Area";
+$lang['form_category_post']         = "Category";
+$lang['form_tags_post']         = "Tags";
+$lang['form_meta_key_post']         = "Meta Key";
+$lang['form_meta_key_note_post']         = "use comma to separated meta key, ex: one, two, three..etc";
+$lang['form_meta_description_post']         = "Meta Description";
+$lang['form_head_article_post']         = "Head Post";
+$lang['form_main_content_post']         = "Main Content";
+$lang['form_allow_comment_post']         = "Allow Comment";
+$lang['form_sticky_content_post']         = "Sticky";
+$lang['form_featured_content_post']         = "Featured";
+$lang['form_tags_post']                 = "Tags";
+$lang['form_tags_note_post']                 = "use comma to separated tags, ex: one, two, three..etc";
+$lang['form_image_header_post']         = "Image Header";
+$lang['form_image_header_note']         = "if you not use image, it will show default image";
+$lang['form_date_post']         = "Date Posted";
+$lang['form_status_post']         = "Status";
+$lang['form_btn_apply_post']         = "Apply";
+$lang['form_btn_reset_post']         = "Reset";
+$lang['form_btn_submit_post']         = "Submit";
+$lang['form_btn_back_post']         = "Back";
+$lang['form_succes_create_post']        = "Create new post success";
+$lang['form_failed_create_post']        = "Failed create new post. Please call administrator.";
 
-/* End of file general_lang.php */
-/* Location: ./application/modules/blog/language/english/general_lang.php */
+
+
+/* End of file posts_lang.php */
+/* Location: ./application/modules/blog/language/english/posts_lang.php */

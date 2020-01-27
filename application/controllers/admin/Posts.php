@@ -17,7 +17,7 @@ class Posts extends MY_AdminController{
 	{
 		parent::__construct();
 		//load model,library,helper,modules
-        $this->load->model('post_model');        
+        $this->load->model(['post_model','categories_model']);        
         $this->load->library(array('ion_auth','form_validation','pagination'));
 		$this->load->helper('language');
 		
@@ -66,145 +66,142 @@ class Posts extends MY_AdminController{
 	
 	function new()
 	{
-		//cek apakah user sudah login dan diizinkan untuk masuk ke halaman ini
-		$this->auth->restrict();
-		
-		//load module yang dibutuhkan
-		$this->load->model('content/content_model','cm');
-		$this->load->model('kategori/kategori_model','km');
-		
-		$data['tpl_page'] = "article/form_article";
-		$data['tpl_data'] = array(
-			'form_action' => $this->url_admin."article/save",
-			'title' => $this->title." > Create New Article",
-			'content_list' => $this->cm->getAll('id'),
-			'kat_list'=> $this->km->getAll('id')
+		$data = array(
+            'button' => 'Create',
+            'form_action' => site_url('admin/posts/save'),
+			'readonly' => '',
+			'cat_list' => $this->categories_model->get_categories(),
+			'title' => set_value('title'),
+			'url_title' => set_value('url_title'),
+			'head_article' => set_value('head_article'),
+			'main_article' => set_value('main_article'),
+			'allow_comments' => set_value('allow_comments'),
+			'sticky' => set_value('sticky'),
+			'featured' => set_value('featured'),
+			'status' => set_value('status'),
+			'tags' => set_value('tags'),
+			'meta_desc' => set_value('meta_desc'),
+			'meta_key' => set_value('meta_key'),
+			'date_posted' => set_value('date_posted'),
+			'image_header' => '',
+			'id_cat' => set_value('id_cat'),
+            'id_post' => ''
 		);
 		
-		$this->load->view('_admin/simpla_admin/template',$data);
+		$this->output->append_title('New Post');
+        
+        $this->load->section('head','themes/'.$this->_template['themes'].'/static/top_nav');
+        $this->load->section('menu','themes/'.$this->_template['themes'].'/static/side_menu');
+		$this->load->section('flashdata','themes/'.$this->_template['themes'].'/static/notification');
+		//datepicker
+		$this->load->js('assets/vendor/gijgo-combined-1.9.13/js/gijgo.min.js');
+		$this->load->css('assets/vendor/gijgo-combined-1.9.13/css/gijgo.min.css');
+		$this->load->js('assets/js/mod_form_post.js');
+
+        $this->load->view('themes/'.$this->_template['themes'].'/layout/post/form_post', $data);
 	}
 	
 	function save()
 	{
-		//cek apakah user sudah login dan diizinkan untuk masuk ke halaman ini
-		$this->auth->restrict();
 		
-		//check type dari section
-		$type_section = $this->input->post('content_type');
-		
-		$rules_form = array(
-				array(
-					'field'=>'judul_article',
-					'label'=>'Judul Article',
-					'rules'=>'required|min_length[4]'
-				),
-				array(
-					'field'=>'url_article',
-					'label'=>'URL Article',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'content_area',
-					'label'=>'Content Area',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'kategori',
-					'label'=>'Kategori',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'meta_key',
-					'label'=>'Meta Key',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'meta_desc',
-					'label'=>'Meta Description',
-					'rules'=>'required|min_length(4)'
-				),
-				array(
-					'field'=>'head_article',
-					'label'=>'Head Article',
-					'rules'=>'required|min_length(4)'
-				),
-				array(
-					'field'=>'main_article',
-					'label'=>'Main Article',
-					'rules'=>'required|min_length(4)'
-				),
-				array(
-					'field'=>'allow_comment',
-					'label'=>'Allow Comment',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'stick',
-					'label'=>'Stick',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'status',
-					'label'=>'Status',
-					'rules'=>'required'
-				)
-				
-		
-		);
-		
-		//set parameter error form
-		$this->form_validation->set_error_delimiters('<span class="input-notification error png_bg">', '</span>');
-		//insert variabel rules form
-		$this->form_validation->set_rules($rules_form);
-		//cek apakah form valid
-		if($this->form_validation->run() == FALSE)
+		if($this->input->post())
 		{
-			/* setting file template dan data */
-			$data['tpl_page'] = "article/form_article";
-			$data['tpl_data'] =array(
-					'form_action' => $this->url_admin."article/save",
-					'title' => $this->title." > Create Article",
-			);
-			//load the form view
-			$this->load->view('_admin/simpla_admin/template',$data);
+			$id = $this->input->post('id_post');
+
+			$this->_rules();
 			
-		} else {
-			//buat variable array dari masing2 input form
-			$params_form = array(
-				'author' => $this->session->userdata('userid'),
-				'date_posted' => date('Y-m-d'),
-				'time_posted' => date('H-i-s'),
-				'meta_key' => $this->input->post('meta_key'),
-				'meta_desc' => $this->input->post('meta_desc'),
-				'title' => $this->input->post('judul_article'),
-				'cat' => $this->input->post('kategori'),
-				'content_id' => $this->input->post('content_area'),
-				'url_title' => $this->input->post("url_article"),
-				'head_article' => $this->input->post('head_article'),
-				'main_article' => $this->input->post('main_article'),
-				'allow_comments' => $this->input->post("allow_comment"),
-				'sticky' => $this->input->post('sticky'),
-				'status' => $this->input->post('status')
-				
-			);
-			
-			//save ke dalam database content
-			$proses = $this->am->add($params_form);
-			$tags = $this->input->post('tags');
-			
-			if($proses){
-				//insert tags	
-				if($tags)
-				{
-					$this->am->add_tags();
+			if ($this->form_validation->run() == FALSE) {
+                
+                if($id)
+                {
+                    $this->edit($id);
+                }
+                else
+                {
+                    $this->new();
+                }
+                
+            } else {				
+				//check upload image status
+				$dataimage = NULL;
+				//check directory upload for post
+				$path_dir = $this->config->item('upload').'post/';
+
+				if(!is_dir($path_dir)){
+					//create new folder for the first time
+					mkdir($path_dir, 0755, TRUE);                    
 				}
+
+				if($_FILES['image_header']['size'] > 0 && $_FILES['image_header']['error'] == 0)
+				{					
+					//set upload file config
+					$config = array(
+						'upload_path' => $path_dir,
+						'allowed_types' => 'jpg|png|jpeg|bmp', //change this if you want to more extension files
+						'overwrite' => TRUE,
+						'max_size' => "5120",
+					);
+	
+					$this->upload->initialize($config);
+	
+					if ($this->upload->do_upload("image_header"))
+					{
+	
+						$dataimage = $this->upload->data();
+					}
+					else
+					{
+						$dataimage = NULL;
+						$error = $this->upload->display_errors();
+						$this->session->set_flashdata('error', $error);
+					}
+				}
+				else
+				{
+					$dataimage['image_header'] = ($this->input->post('def_image')) ? $this->input->post('def_image') : NULL;
+				}
+				//Create new post array to insert to database
+				$new_post = array(
+					'image_header' => ($dataimage['image_header'] !== NULL) ? $path_dir.$dataimage['file_name'] : $dataimage['image_header'],
+					'author' => $this->session->userdata('user_id'),
+					'date_posted' => date('Y-m-d H:i:s', strtotime($this->input->post('date_posted'))),
+					'meta_key' => $this->input->post('meta_key'),
+					'meta_desc' => $this->input->post('meta_desc'),
+					'title' => $this->input->post('title'),
+					'id_cat' => $this->input->post('id_cat'),
+					'url_title' => $this->input->post("url_title"),
+					'head_article' => $this->input->post('head_article'),
+					'main_article' => $this->input->post('main_article'),					
+					'status' => ($this->input->post('status')) ? $this->input->post('status') : 'draft',
+					'allow_comments' => ($this->input->post('allow_comment')) ? $this->input->post("allow_comment") : 0,
+					'sticky' => ($this->input->post('sticky')) ? $this->input->post('sticky') : 0,
+					'featured' => ($this->input->post('featured')) ? $this->input->post('featured') : 0,					
+				);
 				
-				$this->session->set_flashdata('success','Berhasil membuat article baru');
-			} else {
-				$this->session->set_flashdata('error','Gagal membuat article baru. Hubungi Administrator untuk masalah ini.');
+				//save data and return id
+				$post_id = $this->post_model->add($new_post);
+				$tags = $this->input->post('tags');
+				
+				if($post_id){
+					//insert tags	
+					if($tags)
+					{
+						$this->post_model->add_tags($this->post_model->parse_tags($tags), $post_id);
+					}
+					
+					$this->session->set_flashdata('success', lang('form_succes_create_post'));
+
+					redirect(site_url('admin/posts'));
+				} else {
+
+					$this->session->set_flashdata('error', lang('form_failed_create_post'));
+					redirect(site_url('admin/posts/new'));
+				}
 			}
-		
-			redirect($this->url_admin.'article/index');
+
+		} else {
+			echo "invalid method";
+			exit;
 		}
 		
 	}
@@ -265,20 +262,50 @@ class Posts extends MY_AdminController{
 			redirect($this->url_admin.'article/index');
 	}
 	
-	function delete($id)
+	//return ajax response
+	function delete()
 	{
-		//cek apakah user sudah login dan diizinkan untuk masuk ke halaman ini
-		$this->auth->restrict();
-		
-		$proses = $this->am->delete(array('id'=>$id));
-			
+		$this->output->unset_template();
+
+		if($this->input->post()){
+			$id = $this->input->post('id_post');
+
+			$proses = $this->post_model->delete(array('id'=>$id));
+				
 			if($proses){
-				$this->session->set_flashdata('success','Article telah berhasil dihapus.');
+				$response['success'] = true;
+				$response['messages'] = lang('index_success_delete_post');
 			} else {
-				$this->session->set_flashdata('error','Gagal menghapus article. Hubungi Administrator untuk masalah ini.');
+				$response['success'] = false;
+				$response['messages'] = lang('index_failed_delete_post');
 			}
-		
-			redirect($this->url_admin.'article/index');
+
+		} else {
+			$response['success'] = false;
+			$response['messages'] = "Refresh the page again!!";
+		}
+
+		$this->output
+			->set_content_type('application/json')
+			->set_output(json_encode($response));
+	}
+
+	function _rules()
+	{		
+        $this->form_validation->set_rules('title', lang('form_title_post'), 'trim|required');
+        $this->form_validation->set_rules('id_cat', lang('form_category_post'), 'trim|required');
+        $this->form_validation->set_rules('url_title' , lang('form_url_post'), 'trim|required');
+        $this->form_validation->set_rules('head_article', lang('form_head_article_post'), 'trim|required');
+        $this->form_validation->set_rules('main_article', lang('form_main_content_post'), 'trim|required');
+        //$this->form_validation->set_rules('allow_comments', lang('form_allow_comment_post'), 'trim|required');
+        //$this->form_validation->set_rules('sticky', lang('form_sticky_content_post'), 'trim|required');
+        //$this->form_validation->set_rules('featured', lang('form_featured_content_post'), 'trim|required');
+        $this->form_validation->set_rules('status', lang('form_status_post'), 'trim|required');
+        $this->form_validation->set_rules('meta_desc', lang('form_meta_description_post'), 'trim|required');
+        $this->form_validation->set_rules('meta_key', lang('form_meta_key_post'), 'trim|required');
+        $this->form_validation->set_rules('date_posted', lang('form_date_post'), 'trim|required');                          
+
+        $this->form_validation->set_error_delimiters('<span class="text-danger small">', '</span>');
 	}
 	
 }

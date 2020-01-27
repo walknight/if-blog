@@ -5,7 +5,7 @@
     
     <div class="card mb-4">       
         <div class="card-header bg-white">
-            <a href="<?=site_url('admin/post/new')?>" class="btn btn-primary float-right">
+            <a href="<?=site_url('admin/posts/new')?>" class="btn btn-primary float-right">
                 <i class="fa fa-user-plus"></i> <?=lang('index_create_post_new')?>
             </a>
         </div> 		
@@ -45,9 +45,8 @@
                     <td>
                         <?php echo "Category"?>
                     </td>
-                    <td>
-                        <?php echo $list->status; ?>
-                        <?php echo ($list->status) ? '<span class="label label-success">'.lang('index_active_link').'</span>' : '<span class="label label-danger">'.lang('index_inactive_link').'</span>';?>
+                    <td>                        
+                        <?php echo ($list->status == 'published') ? '<span class="badge badge-success">'.lang('index_active_link').'</span>' : '<span class="badge badge-warning">'.lang('index_inactive_link').'</span>';?>
                     </td>
                     <td>
                         <?php echo $list->author; ?>
@@ -104,7 +103,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form role="form" action="<?=site_url('admin/users/delete') ?>" method="post" id="removeForm">
+            <?php echo form_open(site_url('admin/posts/delete'),array('id' => 'removeForm')); ?>            
                 <div class="modal-body">
                     <p>Are you sure want to delete this item ?</p>
                 </div>
@@ -112,9 +111,8 @@
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </div>
-                <input type="hidden" id="id_post" name="id_post" value="">
-                <input type="hidden" id="<?=$csrf['name'];?>" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
-            </form>            
+                <input type="hidden" id="id_post" name="id_post" value="">                
+            <?php echo form_close(); ?>
         </div>
     </div>
 </div>
