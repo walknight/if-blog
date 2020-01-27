@@ -107,6 +107,8 @@ $lang['form_btn_submit_post']         = "Submit";
 $lang['form_btn_back_post']         = "Back";
 $lang['form_succes_create_post']        = "Create new post success";
 $lang['form_failed_create_post']        = "Failed create new post. Please call administrator.";
+$lang['form_succes_update_post']        = "Post has been updated";
+$lang['form_failed_update_post']        = "Failed update post. Please call administrator.";
 
 
 

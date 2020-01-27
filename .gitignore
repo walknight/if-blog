@@ -20,3 +20,4 @@ ci_sessions/*
 .htaccess
 
 application/config/database.php
+upload/*

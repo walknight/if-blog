@@ -231,27 +231,34 @@ class Post_model extends CI_Model
 		}
 	}
 	
-	public function get_post_by_id($post_id)
+	public function get_post_by_id($post_id, $where=null)
 	{
-		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.id_cat, posts.allow_comments, posts.sticky, posts.status, posts.author, users.first_name');
+		$this->db->select('posts.id, posts.author, posts.date_posted, posts.title, posts.url_title, posts.head_article, posts.main_article, posts.meta_key, posts.meta_desc, posts.image_header, posts.id_cat, posts.allow_comments, posts.sticky, posts.featured, posts.status, posts.author, users.first_name');
 		$this->db->from($this->_table['posts'] . ' posts');
 		$this->db->join($this->_table['users'] . ' users', 'posts.author = users.id');
-		$this->db->where('posts.status', 'published');
 		$this->db->where('posts.id', $post_id);
+		//for extra clause
+		//where must be array
+		if($where != null && is_array($where)){
+			$this->db->where($where);
+		}
+
 		$this->db->limit(1);
 		
 		$query = $this->db->get();
-			
+
 		if ($query->num_rows() > 0)
 		{
-			$result = $query->result_array();
-			
-			foreach (array_keys($result) as $key)
-			{
-				$result[$key]['categories'] = $this->categories->get_categories_by_ids($result[$key]['id_cat']);
-				$result['comment_count'] = $this->db->where('post_id', $result['id'])->from($this->_table['comments'])->count_all_results();
-			}
+			//because just single row result
+			$result = $query->row_array();
 
+			if(isset($result))
+			{
+				$result['categories'] = $this->categories->get_categories_by_ids($result['id_cat']);
+				$result['comment_count'] = $this->db->where('post_id', $result['id'])->from($this->_table['comments'])->count_all_results();
+				$result['tags'] = $this->get_tags_by_id_post($result['id']);
+			}
+			
 			return $result;
 		}
 	}
@@ -331,7 +338,7 @@ class Post_model extends CI_Model
 		{
 			$this->db->order_by($order_by);
 		}
-		if(is_array($field) AND $field != "")
+		if($field != "")
 		{
 			$this->db->select($field);
 		}
@@ -340,6 +347,10 @@ class Post_model extends CI_Model
 		{
 			$this->db->limit($limit,$offset);
 		}
+		
+		$this->db->join($this->_table['users'] . ' users', 'posts.author = users.id');
+		$this->db->join($this->_table['categories'].' cat','posts.id_cat = cat.id');
+
 		$result = $this->db->get($this->_table['posts']);
 		
 		if($result->num_rows() > 0)
@@ -409,7 +420,7 @@ class Post_model extends CI_Model
 	*/ 
 	public function update($id, $params)
 	{
-		$this->db->update($this->_table, $params, array('id' => $id));
+		$this->db->update($this->_table['posts'], $params, array('id' => $id));
 		return $this->db->affected_rows();
 	}
 	
@@ -491,6 +502,36 @@ class Post_model extends CI_Model
 		);
 					
 		$this->db->insert($this->_table['tags_to_posts'], $data);
+	}
+
+	/** 
+	* Get tags by id post
+	* 
+	* @access public
+	* @param int
+	* @return string
+	*/
+	function get_tags_by_id_post($post_id)
+	{
+		$this->db->select('tags.name');
+		$this->db->join('tags_to_posts','tags.id = tags_to_posts.tag_id');
+		$this->db->where('tags_to_posts.post_id',$post_id);
+					
+		$query = $this->db->get($this->_table['tags']);
+
+		if($query)
+		{
+			$tags_string = '';
+			foreach($query->result_array() as $row):
+				$tags_string .= $row['name'].',';
+			endforeach;
+
+			return rtrim($tags_string,',');
+		}
+		else
+		{
+			return false;
+		}
 	}
 }
 

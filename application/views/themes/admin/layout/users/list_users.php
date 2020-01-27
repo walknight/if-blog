@@ -1,5 +1,5 @@
 <div class="content p-4">
-    <?php $this->load->get_section('flashdata'); ?>
+    <?php echo $this->load->get_section('flashdata'); ?>
 
     <h2 class="mb-4">User List</h2>
     

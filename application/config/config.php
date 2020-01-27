@@ -542,4 +542,4 @@ $config['images'] = ASSETPATH."images/";
 $config['css'] = ASSETPATH."css/";
 $config['js'] = ASSETPATH."js/";
 $config['vendor'] = ASSETPATH."vendor/";
-$config['upload'] = BASEPATH."upload/";
+$config['upload'] = "upload/";

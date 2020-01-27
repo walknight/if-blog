@@ -209,12 +209,11 @@ class Home extends MY_AdminController{
 
 	public function not_allowed()
 	{
-
 		//load simple template
 		//but still can change themes for further
 		$this->load->section('head','themes/'.$this->_template['themes'].'/static/top_nav');
 		$this->load->section('menu','themes/'.$this->_template['themes'].'/static/side_menu');
-		$this->load->section('flashdata', 'themes'.$this->_template['themes'].'/static/notification');
+		$this->load->section('flashdata', 'themes/'.$this->_template['themes'].'/static/notification');
 
 		$this->load->view('themes/'.$this->_template['themes'].'/layout/blank');
 	}

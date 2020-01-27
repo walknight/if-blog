@@ -1,7 +1,11 @@
 <div class="content p-4">
-    <?php $this->load->get_section('flashdata'); ?>
+    <?php echo $this->load->get_section('flashdata'); ?>
 
+    <?php if($id_post == ''){ ?>
     <h2 class="mb-4">New Post</h2>
+    <?php } else { ?>
+    <h2 class="mb-4">Edit Post</h2>
+    <?php } ?>
 
     <?php echo form_open_multipart($form_action, array('class'=>'form-horizontal'));?>
     
@@ -37,7 +41,7 @@
 								{
 									foreach($cat_list as $row):
 								?>
-									<option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+									<option value="<?php echo $row['id'];?>" <?php echo set_select('id_cat', $row['id'], ($row['id'] == $id_cat) ? TRUE : FALSE); ?> ><?php echo $row['name']; ?></option>
 								<?php	
 									endforeach;
 								} else {
@@ -158,7 +162,7 @@
                     <div class="form-group row">
                         <?php echo lang('form_date_post', 'date_posted',array('class' => 'col-sm-3 col-form-label'));?>
                         <div class="col-sm-6">
-                            <input type="text" name="date_posted" id="datepicker" class="form-control" value="<?=$date_posted?>" />
+                            <input type="text" name="date_posted" id="datepicker" class="form-control" value="<?=date('H:i m/d/Y', strtotime($date_posted))?>" />
                             <?=form_error('date_posted')?>
                         </div>
                     </div>
@@ -170,10 +174,11 @@
                         <div class="col-sm-8">
                             <?php if($image_header != ''){ ?>
                                 <img id="blah" alt="image header" src="<?=base_url($image_header)?>" class="img-thumbnail" />
+                                <input type="hidden" name="def_image" value="<?=$image_header?>" />  
                             <?php } else { ?>
                                 <img id="blah" alt="image header" src="<?=base_url('assets/images/no-img.jpg')?>" class="img-thumbnail" />
                             <?php } ?>
-                            <input type="file" name="image_header" class="form-control-file" id="image_header" />                            
+                            <input type="file" name="image_header" class="form-control-file" id="image_header" />                                                      
                             <small><?php echo lang('form_image_header_note'); ?></small>
                         </div>
                     </div>

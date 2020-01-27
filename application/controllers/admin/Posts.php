@@ -49,7 +49,8 @@ class Posts extends MY_AdminController{
         $this->pagination->initialize($paging);
 		
 		//prepare data for view
-		$data['post_list'] = $this->post_model->getAll('','date_posted desc', $paging['per_page'], $start );
+		$select = 'posts.*, users.id as user_id, users.username, cat.id as cat_id, cat.name as cat_name';
+		$data['post_list'] = $this->post_model->getAll($select,'posts.id desc', $paging['per_page'], $start );
 		$data['pagination'] = $this->pagination->create_links();
 		$data['total_rows'] = $paging['total_rows'];
 		$data['start'] = $start;
@@ -67,7 +68,6 @@ class Posts extends MY_AdminController{
 	function new()
 	{
 		$data = array(
-            'button' => 'Create',
             'form_action' => site_url('admin/posts/save'),
 			'readonly' => '',
 			'cat_list' => $this->categories_model->get_categories(),
@@ -112,13 +112,13 @@ class Posts extends MY_AdminController{
 			
 			if ($this->form_validation->run() == FALSE) {
                 
-                if($id)
+                if($id === NULL || $id == '')
                 {
-                    $this->edit($id);
+					$this->new();
                 }
                 else
                 {
-                    $this->new();
+					$this->edit($id);
                 }
                 
             } else {				
@@ -126,8 +126,8 @@ class Posts extends MY_AdminController{
 				$dataimage = NULL;
 				//check directory upload for post
 				$path_dir = $this->config->item('upload').'post/';
-
-				if(!is_dir($path_dir)){
+				
+				if(!is_dir($path_dir)){					
 					//create new folder for the first time
 					mkdir($path_dir, 0755, TRUE);                    
 				}
@@ -139,14 +139,13 @@ class Posts extends MY_AdminController{
 						'upload_path' => $path_dir,
 						'allowed_types' => 'jpg|png|jpeg|bmp', //change this if you want to more extension files
 						'overwrite' => TRUE,
-						'max_size' => "5120",
+						'max_size' => "2048",
 					);
 	
-					$this->upload->initialize($config);
+					$this->load->library('upload', $config);
 	
 					if ($this->upload->do_upload("image_header"))
-					{
-	
+					{						
 						$dataimage = $this->upload->data();
 					}
 					else
@@ -158,11 +157,11 @@ class Posts extends MY_AdminController{
 				}
 				else
 				{
-					$dataimage['image_header'] = ($this->input->post('def_image')) ? $this->input->post('def_image') : NULL;
+					$dataimage = ($this->input->post('def_image')) ? $this->input->post('def_image') : NULL;
 				}
 				//Create new post array to insert to database
-				$new_post = array(
-					'image_header' => ($dataimage['image_header'] !== NULL) ? $path_dir.$dataimage['file_name'] : $dataimage['image_header'],
+				$param_post = array(
+					'image_header' => ($dataimage !== NULL && is_array($dataimage)) ? $path_dir.$dataimage['file_name'] : $dataimage,
 					'author' => $this->session->userdata('user_id'),
 					'date_posted' => date('Y-m-d H:i:s', strtotime($this->input->post('date_posted'))),
 					'meta_key' => $this->input->post('meta_key'),
@@ -173,33 +172,56 @@ class Posts extends MY_AdminController{
 					'head_article' => $this->input->post('head_article'),
 					'main_article' => $this->input->post('main_article'),					
 					'status' => ($this->input->post('status')) ? $this->input->post('status') : 'draft',
-					'allow_comments' => ($this->input->post('allow_comment')) ? $this->input->post("allow_comment") : 0,
+					'allow_comments' => ($this->input->post('allow_comments')) ? $this->input->post("allow_comments") : 0,
 					'sticky' => ($this->input->post('sticky')) ? $this->input->post('sticky') : 0,
 					'featured' => ($this->input->post('featured')) ? $this->input->post('featured') : 0,					
 				);
 				
-				//save data and return id
-				$post_id = $this->post_model->add($new_post);
+				//check if is update or create
+				if($id === NULL || $id == '')
+				{
+					//if create so insert it
+					//add param create time
+					$param_post['create_at'] = date('Y-m-d H:i:s');					
+					$post_id = $this->post_model->add($param_post);
+				} else {
+					//if update so update it
+					//add param update time
+					$param_post['update_at'] = date('Y-m-d H:i:s');					
+					$post_id = $this->post_model->update($id, $param_post);					
+				}
+				
 				$tags = $this->input->post('tags');
 				
 				if($post_id){
-					//insert tags	
+					//insert tags for new or update tags	
 					if($tags)
 					{
 						$this->post_model->add_tags($this->post_model->parse_tags($tags), $post_id);
 					}
 					
-					$this->session->set_flashdata('success', lang('form_succes_create_post'));
+					if($id === NULL || $id == ''){
+						$this->session->set_flashdata('success', lang('form_succes_create_post'));
+						redirect(site_url('admin/posts'));						
+					} else { 
+						$this->session->set_flashdata('success', lang('form_succes_update_post'));
+						redirect(site_url('admin/posts/edit/'.$id));
+					}
 
-					redirect(site_url('admin/posts'));
+					
 				} else {
-
-					$this->session->set_flashdata('error', lang('form_failed_create_post'));
-					redirect(site_url('admin/posts/new'));
+					if($id === NULL || $id == ''){
+						$this->session->set_flashdata('error', lang('form_failed_create_post'));
+						redirect(site_url('admin/posts/new'));
+					} else {
+						$this->session->set_flashdata('error', lang('form_failed_update_post'));
+						redirect(site_url('admin/posts/edit/'.$id));
+					}
 				}
 			}
 
 		} else {
+			$this->output->unset_template();
 			echo "invalid method";
 			exit;
 		}
@@ -208,58 +230,42 @@ class Posts extends MY_AdminController{
 	
 	function edit($id)
 	{
-		//cek apakah user sudah login dan diizinkan untuk masuk ke halaman ini
-		$this->auth->restrict();
-		
-		//load module yang dibutuhkan
-		$this->load->model('content/content_model','cm');
-		$this->load->model('kategori/kategori_model','km');
-		
-		$data['tpl_page'] = "article/form_article";
-		$data['tpl_data'] = array(
-			'form_action' => $this->url_admin."article/update/".$id,
-			'title' => $this->title." > Edit Article",
-			'content_list' => $this->cm->getAll('id'),
-			'kat_list'=> $this->km->getAll('id'),
-			'return' => $this->am->get($id)
-		);
-	
-		$this->load->view('_admin/simpla_admin/template',$data);
-	}
-	
-	function update($id)
-	{
-		//cek apakah user sudah login dan diizinkan untuk masuk ke halaman ini
-		$this->auth->restrict();
-		
-		$params_form = array(
-				'author' => $this->session->userdata('userid'),
-				'date_posted' => date('Y-m-d'),
-				'time_posted' => date('H-i-s'),
-				'meta_key' => $this->input->post('meta_key'),
-				'meta_desc' => $this->input->post('meta_desc'),
-				'title' => $this->input->post('judul_article'),
-				'cat' => $this->input->post('kategori'),
-				'content_id' => $this->input->post('content_area'),
-				'url_title' => $this->input->post("url_article"),
-				'head_article' => $this->input->post('head_article'),
-				'main_article' => $this->input->post('main_article'),
-				'allow_comments' => $this->input->post("allow_comment"),
-				'sticky' => $this->input->post('stick'),
-				'status' => $this->input->post('status')
-				
+		//return single row array;
+		$post_data = $this->post_model->get_post_by_id($id);
+
+		$data = array(
+            'form_action' => site_url('admin/posts/save'),
+			'readonly' => '',
+			'cat_list' => $this->categories_model->get_categories(),
+			'title' => $post_data['title'],
+			'url_title' => $post_data['url_title'],
+			'head_article' => $post_data['head_article'],
+			'main_article' => $post_data['main_article'],
+			'allow_comments' => $post_data['allow_comments'],
+			'sticky' => $post_data['sticky'],
+			'featured' => $post_data['featured'],
+			'status' => $post_data['status'],
+			'tags' => $post_data['tags'],
+			'meta_desc' => $post_data['meta_desc'],
+			'meta_key' => $post_data['meta_key'],
+			'date_posted' => $post_data['date_posted'],
+			'image_header' => $post_data['image_header'],
+			'id_cat' => $post_data['id_cat'],
+            'id_post' => $post_data['id']
 		);
 		
-		//save ke dalam database content
-			$proses = $this->am->update($id,$params_form);
-			
-			if($proses){
-				$this->session->set_flashdata('success','Berhasil update data article : <b>'.$this->input->post('judul_article')."</b>");
-			} else {
-				$this->session->set_flashdata('error','Gagal mengupdate article. Hubungi Administrator untuk masalah ini.');
-			}
+		$this->output->append_title('Edit Post');
+        
+        $this->load->section('head','themes/'.$this->_template['themes'].'/static/top_nav');
+        $this->load->section('menu','themes/'.$this->_template['themes'].'/static/side_menu');
+		$this->load->section('flashdata','themes/'.$this->_template['themes'].'/static/notification');
+		//datepicker
+		$this->load->js('assets/vendor/gijgo-combined-1.9.13/js/gijgo.min.js');
+		$this->load->css('assets/vendor/gijgo-combined-1.9.13/css/gijgo.min.css');
+		$this->load->js('assets/js/mod_form_post.js');
+
+		$this->load->view('themes/'.$this->_template['themes'].'/layout/post/form_post', $data);
 		
-			redirect($this->url_admin.'article/index');
 	}
 	
 	//return ajax response
