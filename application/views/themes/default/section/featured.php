@@ -3,10 +3,10 @@
 <?php foreach($featured as $list): ?>
 <div class="col-md-6">
     <div class="card flex-md-row mb-4 box-shadow h-md-250">
-    <div class="card-body d-flex flex-column align-items-start">
-        <?php foreach($list['categories'] as $cat): ?>
-        <strong class="d-inline-block mb-2 text-danger"><?=$cat['name']?></strong>
-        <?php endforeach; ?>
+    <div class="card-body d-flex flex-column align-items-start">        
+        <?php //foreach($list['categories'] as $cat): ?>
+        <strong class="d-inline-block mb-2 text-danger"><?=$list['categories']['name']?></strong>
+        <?php //endforeach; ?>
         <h3 class="mb-0">
         <a class="text-dark" href="#"><?=$list['title']?></a>
         </h3>

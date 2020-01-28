@@ -33,6 +33,6 @@
         </li>
         <li><a href="<?=site_url('admin/commets')?>"><i class="fa fa-fw fa-comment"></i> Comments</a></li>
         <li><a href="<?=site_url('admin/navigation')?>"><i class="fa fa-fw fa-bars"></i> Navigation</a></li>
-        <li><a href="<?=site_url('admin/home/settings')?>"><i class="fa fa-fw fa-toggle-on"></i> Settings</a></li>
+        <li><a href="<?=site_url('admin/home/site_settings')?>"><i class="fa fa-fw fa-toggle-on"></i> Settings</a></li>
     </ul>
 </div>

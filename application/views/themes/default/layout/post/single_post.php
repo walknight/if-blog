@@ -3,7 +3,7 @@
         <div class="col-md-9 blog-main">
             <div class="blog-post">
                 <img src="https://via.placeholder.com/830x400" class="img-fluid" />
-                <strong class="d-inline-block mb-2 mt-3 text-secondary"><?php echo "Categories"; ?></strong>
+                <strong class="d-inline-block mb-2 mt-3 text-secondary"><?php echo $post['categories']['name']; ?></strong>
                 <h2 class="blog-post-title"><?=$post['title']?></h2>
                 <p class="blog-post-meta"><?=strftime('%B %d, %Y', strtotime($post['date_posted'])); ?>
                     <?php echo lang('by'); ?> <?php echo $post['display_name']; ?></p>
@@ -13,9 +13,13 @@
             <?php if($post['allow_comments']){ ?>
             <div class="post-comments">
                 <header>
-                    <h3 class="h6"><?=lang('comments')?><span class="no-of-comments">(3)</span></h3>
+                    <h3 class="h6"><?=lang('comments')?><span class="no-of-comments"><?php echo '('.count($comments).')'; ?></span></h3>
                 </header>
                 <hr>
+                <?php 
+                    if(count($comments) > 0){ 
+                        foreach($comments as $list):
+                ?>
                 <div class="media">
                     <img src="https://d19m59y37dris4.cloudfront.net/blog/1-2-1/img/user.svg" width="50px" class="mr-3" alt="picture">
                     <div class="media-body">
@@ -26,7 +30,10 @@
                         vulputate fringilla. Donec lacinia congue felis in faucibus.
                     </div>
                 </div>
-                
+                <?php
+                        endforeach;
+                    }
+                ?>
             </div>
             
             <div class="add-comment mt-5 mb-5">

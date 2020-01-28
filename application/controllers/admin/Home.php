@@ -7,6 +7,12 @@ class Home extends MY_AdminController{
     function __construct()
     {
 		parent::__construct();
+
+		//load model,library,helper     
+        $this->load->library(array('ion_auth'));
+		$this->load->helper(['language','form']);
+	
+		$this->lang->load('general');
 	
 		if(!$this->ion_auth->logged_in()){
 			redirect(site_url('admin/auth/login'));
@@ -34,26 +40,88 @@ class Home extends MY_AdminController{
 
     function site_settings()
 	{
-		//allowed user ?
-		$this->ion_auth->get_allowed();
-		
 		//load library
 		$this->load->library('form_validation');
 		
-		//load model
-		$this->load->model('setting_model','sm');
-		
-		$data['tpl_data'] = array(
-				'title' => "Site Setup > Settings Site Configuration ",
-				'form_action' => $this->url_admin."save_settings",
-				'return' => $this->sm->get_settings()
+		$data = array(
+			'form_action' => site_url('admin/home/save_settings'),
 		);
 		
-		$this->load->section('head','themes/'.$this->_template['themes'].'/static/top_nav');
-		$this->load->section('menu','themes/'.$this->_template['themes'].'/static/side_menu');
-		$this->load->view('themes/'.$this->_template['themes'].'/layout/form_settings', $data);
+		$this->output->append_title('Edit Settings');
+        
+        $this->load->section('head','themes/'.$this->_template['themes'].'/static/top_nav');
+        $this->load->section('menu','themes/'.$this->_template['themes'].'/static/side_menu');
+		$this->load->section('flashdata','themes/'.$this->_template['themes'].'/static/notification');
+		$this->load->js($this->config->item('js').'mod_form_settings.js');
 
-		$this->load->view($this->templateAdmin.'template',$data);
+		$this->load->view('themes/'.$this->_template['themes'].'/layout/settings/form_settings', $data);
+	}
+
+	function upload_image()
+	{
+		if($this->input->post())
+		{
+			if(count($_FILES) == 0)
+			{
+				$this->session->set_flashdata('error', lang('error_upload_multiple_value'));
+
+				redirect(site_url('admin/home/site_settings'));
+			}
+
+			print_r($_FILES);
+			exit;
+
+			if($_FILES['image_header']['size'] > 0 && $_FILES['image_header']['error'] == 0)
+			{					
+				//set upload file config
+				$config = array(
+					'upload_path' => $this->config->item('upload'),
+					'allowed_types' => 'jpg|png|jpeg', //change this if you want to more extension files
+					'overwrite' => TRUE,
+					'max_size' => "2048",
+				);
+
+				$this->load->library('upload', $config);
+
+				if ($this->upload->do_upload("image_header"))
+				{						
+					$dataimage = $this->upload->data();
+				}
+				else
+				{
+					$dataimage = NULL;
+					$error = $this->upload->display_errors();
+					$this->session->set_flashdata('error', $error);
+				}
+			}
+			else
+			{
+				$dataimage = ($this->input->post('def_image')) ? $this->input->post('def_image') : NULL;
+			}
+			//Create new post array to insert to database
+			$param_post = array(
+				'image_header' => ($dataimage !== NULL && is_array($dataimage)) ? $path_dir.$dataimage['file_name'] : $dataimage,
+				'author' => $this->session->userdata('user_id'),
+				'date_posted' => date('Y-m-d H:i:s', strtotime($this->input->post('date_posted'))),
+				'meta_key' => $this->input->post('meta_key'),
+				'meta_desc' => $this->input->post('meta_desc'),
+				'title' => $this->input->post('title'),
+				'id_cat' => $this->input->post('id_cat'),
+				'url_title' => $this->input->post("url_title"),
+				'head_article' => $this->input->post('head_article'),
+				'main_article' => $this->input->post('main_article'),					
+				'status' => ($this->input->post('status')) ? $this->input->post('status') : 'draft',
+				'allow_comments' => ($this->input->post('allow_comments')) ? $this->input->post("allow_comments") : 0,
+				'sticky' => ($this->input->post('sticky')) ? $this->input->post('sticky') : 0,
+				'featured' => ($this->input->post('featured')) ? $this->input->post('featured') : 0,					
+			);
+		}
+		else
+		{
+			$this->output->unset_template();
+			echo "invalid method";
+			exit;
+		}
 	}
 	
 	function save_settings()
@@ -67,7 +135,7 @@ class Home extends MY_AdminController{
 		//load library
 		$this->load->library('form_validation');
 		//load idel
-		$this->load->model('setting_model','sm');
+		$this->load->model('settings_model','sm');
 		
 		$rules_forms = array(
 				array(
@@ -159,17 +227,8 @@ class Home extends MY_AdminController{
 		//cek apakah form valid
 		if($this->form_validation->run() == FALSE)
 		{
-			/* setting file template dan data */
-			$data['tpl_page'] = 'settings/form_settings';
-			$data['tpl_data'] = array(
-					'title' => "Site Setup > Settings Site Configuration ",
-					'form_action' => $this->url_admin."save_settings",
-					'return' => $this->sm->get_settings()
-			);
-			print_r($_POST);
-			echo validation_errors();
-			//load the form view
-			$this->load->view($this->templateAdmin.'template',$data);
+			$this->session->set_flashdata('error', validation_errors());
+			redirect(site_url('admin/home/site_settings'));
 			
 		} else {
 			//buat variable array dari masing2 input form
@@ -202,8 +261,7 @@ class Home extends MY_AdminController{
 				$this->session->set_flashdata('error','Gagal mengubah seting website. Hubungi Administrator untuk masalah ini.');
 			}
 			
-		
-			redirect($this->url_admin.'site_settings');
+			redirect(site_url('admin/home/site_settings'));
 		}
 	}
 

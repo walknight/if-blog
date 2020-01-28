@@ -9,9 +9,9 @@
         <?php if($post_item['sticky'] != 1){ ?>
         
         <div class="blog-post">
-            <?php foreach($post_item['categories'] as $cat): ?>
-            <strong class="d-inline-block mb-2 text-secondary"><?=$cat['name']?></strong>
-            <?php endforeach; ?>
+            <?php //foreach($post_item['categories'] as $cat): ?>
+            <strong class="d-inline-block mb-2 text-secondary"><?=$post_item['categories']['name']?></strong>
+            <?php //endforeach; ?>
             <h2 class="blog-post-title"><?=$post_item['title']?></h2>
             <p class="blog-post-meta"><?=strftime('%B %d, %Y', strtotime($post_item['date_posted'])); ?>  <?php echo lang('by'); ?> <?php echo $post_item['display_name']; ?></p>
             <?php echo $post_item['head_article']; ?>
