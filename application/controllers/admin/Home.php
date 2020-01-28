@@ -9,9 +9,9 @@ class Home extends MY_AdminController{
 		parent::__construct();
 
 		//load model,library,helper     
-        $this->load->library(array('ion_auth'));
+        $this->load->library(array('ion_auth','form_validation'));
 		$this->load->helper(['language','form']);
-	
+		
 		$this->lang->load('general');
 	
 		if(!$this->ion_auth->logged_in()){
@@ -40,11 +40,12 @@ class Home extends MY_AdminController{
 
     function site_settings()
 	{
-		//load library
-		$this->load->library('form_validation');
+		//load model
+		$this->load->model('settings_model','sm');
 		
 		$data = array(
 			'form_action' => site_url('admin/home/save_settings'),
+			'social_links' => $this->sm->get_social_links(),
 		);
 		
 		$this->output->append_title('Edit Settings');
@@ -57,173 +58,52 @@ class Home extends MY_AdminController{
 		$this->load->view('themes/'.$this->_template['themes'].'/layout/settings/form_settings', $data);
 	}
 
-	function upload_image()
+	function save_settings()
 	{
-		if($this->input->post())
+
+		if(count($_FILES) == 0)
 		{
-			if(count($_FILES) == 0)
-			{
-				$this->session->set_flashdata('error', lang('error_upload_multiple_value'));
+			$this->session->set_flashdata('error', lang('error_upload_multiple_value'));
 
-				redirect(site_url('admin/home/site_settings'));
-			}
+			redirect(site_url('admin/home/site_settings'));
+		}
 
-			print_r($_FILES);
-			exit;
+		print_r($_FILES);
+		exit;
 
-			if($_FILES['image_header']['size'] > 0 && $_FILES['image_header']['error'] == 0)
-			{					
-				//set upload file config
-				$config = array(
-					'upload_path' => $this->config->item('upload'),
-					'allowed_types' => 'jpg|png|jpeg', //change this if you want to more extension files
-					'overwrite' => TRUE,
-					'max_size' => "2048",
-				);
+		if($_FILES['image_header']['size'] > 0 && $_FILES['image_header']['error'] == 0)
+		{					
+			//set upload file config
+			$config = array(
+				'upload_path' => $this->config->item('upload'),
+				'allowed_types' => 'jpg|png|jpeg', //change this if you want to more extension files
+				'overwrite' => TRUE,
+				'max_size' => "2048",
+			);
 
-				$this->load->library('upload', $config);
+			$this->load->library('upload', $config);
 
-				if ($this->upload->do_upload("image_header"))
-				{						
-					$dataimage = $this->upload->data();
-				}
-				else
-				{
-					$dataimage = NULL;
-					$error = $this->upload->display_errors();
-					$this->session->set_flashdata('error', $error);
-				}
+			if ($this->upload->do_upload("image_header"))
+			{						
+				$dataimage = $this->upload->data();
 			}
 			else
 			{
-				$dataimage = ($this->input->post('def_image')) ? $this->input->post('def_image') : NULL;
+				$dataimage = NULL;
+				$error = $this->upload->display_errors();
+				$this->session->set_flashdata('error', $error);
 			}
-			//Create new post array to insert to database
-			$param_post = array(
-				'image_header' => ($dataimage !== NULL && is_array($dataimage)) ? $path_dir.$dataimage['file_name'] : $dataimage,
-				'author' => $this->session->userdata('user_id'),
-				'date_posted' => date('Y-m-d H:i:s', strtotime($this->input->post('date_posted'))),
-				'meta_key' => $this->input->post('meta_key'),
-				'meta_desc' => $this->input->post('meta_desc'),
-				'title' => $this->input->post('title'),
-				'id_cat' => $this->input->post('id_cat'),
-				'url_title' => $this->input->post("url_title"),
-				'head_article' => $this->input->post('head_article'),
-				'main_article' => $this->input->post('main_article'),					
-				'status' => ($this->input->post('status')) ? $this->input->post('status') : 'draft',
-				'allow_comments' => ($this->input->post('allow_comments')) ? $this->input->post("allow_comments") : 0,
-				'sticky' => ($this->input->post('sticky')) ? $this->input->post('sticky') : 0,
-				'featured' => ($this->input->post('featured')) ? $this->input->post('featured') : 0,					
-			);
 		}
 		else
 		{
-			$this->output->unset_template();
-			echo "invalid method";
-			exit;
-		}
-	}
-	
-	function save_settings()
-	{
-		if(empty($_POST))
-		{
-			redirect($this->url_admin.'dashboard');
-			die();
+			$dataimage = ($this->input->post('def_image')) ? $this->input->post('def_image') : NULL;
 		}
 		
-		//load library
-		$this->load->library('form_validation');
-		//load idel
+		//load model
 		$this->load->model('settings_model','sm');
 		
-		$rules_forms = array(
-				array(
-					'field'=>'site_title',
-					'label'=>'Site Title',
-					'rules'=>'required|min_length[4]'
-				),
-				array(
-					'field'=>'meta_key',
-					'label'=>'Meta Keywords',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'site_desc',
-					'label'=>'Meta Description',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'regist',
-					'label'=>'Allow Registration',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'enable_cap',
-					'label'=>'Enable Captcha',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'user_agent',
-					'label'=>'Recognize User Agent',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'rss_post',
-					'label'=>'Enable RSS Post',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'rss_comment',
-					'label'=>'Enable RSS Comments',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'atom_post',
-					'label'=>'Enable Atom Post',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'atom_comment',
-					'label'=>'Enable Atom Comments',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'post_per_page',
-					'label'=>'Post Per Page',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'links_per_box',
-					'label'=>'Llinks per box',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'month_archive',
-					'label'=>'Month per archive',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'enable_site',
-					'label'=>'Enable Site',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'off_reason',
-					'label'=>'Offline Reason',
-					'rules'=>'required'
-				),
-				array(
-					'field'=>'email_admin',
-					'label'=>'Email Admin',
-					'rules'=>'required|valid_email'
-				)
-		);
-		
-		//set parameter error form
-		$this->form_validation->set_error_delimiters('<span class="input-notification error png_bg">', '</span>');
-		//insert variabel rules form
-		$this->form_validation->set_rules($rules_forms);
+		$this->_rules_settings();
+
 		//cek apakah form valid
 		if($this->form_validation->run() == FALSE)
 		{
@@ -232,25 +112,8 @@ class Home extends MY_AdminController{
 			
 		} else {
 			//buat variable array dari masing2 input form
-			$params_form = array(
-				'site_title' => $this->input->post('site_title'),
-				'site_description' => $this->input->post('site_desc'),
-				'meta_keywords' => $this->input->post('meta_key'),
-				'allow_registrations' => $this->input->post('regist'),
-				'enable_captcha' => $this->input->post('capthca'),
-				'recognize_user_agent' => $this->input->post('user_agent'),
-				'enable_rss_post' => $this->input->post('rss_post'),
-				'enable_rss_comments' => $this->input->post('rss_comment'),
-				'enable_atom_post' => $this->input->post('atom_post'),
-				'enable_atom_comments' => $this->input->post('atom_comment'),
-				'post_per_page' => $this->input->post('post_per_page'),
-				'links_per_box' => $this->input->post('links_per_box'),
-				'months_per_archive' => $this->input->post('month_archive'),
-				'enabled' => $this->input->post('enable_site'),
-				'offline_reason' => $this->input->post('off_reason'),
-				'admin_email' => $this->input->post('email_admin')
-				
-			);
+			$params_form = array();
+			$params_social = array();
 			
 			//save ke dalam database content
 			$proses = $this->sm->update($params_form);
@@ -274,6 +137,18 @@ class Home extends MY_AdminController{
 		$this->load->section('flashdata', 'themes/'.$this->_template['themes'].'/static/notification');
 
 		$this->load->view('themes/'.$this->_template['themes'].'/layout/blank');
+	}
+
+	function _rules_settings()
+	{
+		$this->form_validation->set_rules('title', lang('form_title_post'), 'trim|required');
+        $this->form_validation->set_rules('id_cat', lang('form_category_post'), 'trim|required');
+        $this->form_validation->set_rules('url_title' , lang('form_url_post'), 'trim|required');
+        $this->form_validation->set_rules('head_article', lang('form_head_article_post'), 'trim|required');
+        $this->form_validation->set_rules('main_article', lang('form_main_content_post'), 'trim|required');
+	
+		//set parameter error form
+		$this->form_validation->set_error_delimiters('<span class="input-notification error png_bg">', '</span>');
 	}
 
 }

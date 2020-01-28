@@ -24,6 +24,7 @@ $config['sidebar'] 				= 'sidebar';
 $config['templates'] 			= 'templates';
 $config['languages'] 			= 'languages';
 $config['users'] 				= 'users';
+$config['social_link'] 				= 'social_link';
 
 /* End of file database_tables.php */
 /* Location: ./application/config/database_tables.php */

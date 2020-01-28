@@ -33,7 +33,28 @@ class Settings_model extends CI_Model
 			
 			return $result;
 		}
-	}
+    }
+    
+    // Public methods
+	public function get_social_links()
+	{
+		$query = $this->db->get($this->_table['social_link']);
+			
+		if ($query->num_rows() > 0)
+		{
+			$result = $query->result_array();
+			
+			return $result;
+		}
+    }
+    
+    // Public methods
+	public function update_social_links($params)
+	{
+        $query = $this->db->update($this->_table['social_link'], $params);
+
+        return $this->db->affected_rows();
+    }	
 	
 	
 	/** 

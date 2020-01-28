@@ -7,14 +7,31 @@ $(document).ready(function(){
     });
 
     $('#email_protocal').change(function(){
-        alert(this.value);
+        if(this.value == 'sendmail'){
+            $('#sendmail_input').show();
+            $('.smtp_input').hide();
+        } else if(this.value == 'smtp'){
+            $('#sendmail_input').hide();
+            $('.smtp_input').show();
+        } else {
+            $('#sendmail_input').hide();
+            $('.smtp_input').hide();
+        }
+
     });
 
     $("#og_image").change(function(){
         readURL(this, '#image_og');
     });
 
-    $("#editor").editor();
+    $('#site_enabled').click(function(){
+        if ($(this).prop('checked') == true) {
+            $('#offline_reason').prop("readonly", true);
+        } else {
+            // the checkbox is now no longer checked
+            $('#offline_reason').removeAttr("readonly");
+        }
+    })
 
     function readURL(input, image_id) {
         if (input.files && input.files[0]) {

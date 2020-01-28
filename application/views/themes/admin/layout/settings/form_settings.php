@@ -15,7 +15,7 @@
                         <a class="nav-link active show" id="v-pills-general-tab" data-toggle="pill" href="#v-pills-general" role="tab" aria-controls="v-pills-home" aria-selected="false"><i class="fa fa-fw fa-cog"></i> General</a>
                         <a class="nav-link" id="v-pills-logo-tab" data-toggle="pill" href="#v-pills-logo" role="tab" aria-controls="v-pills-logo" aria-selected="false"><i class="fa fa-fw fa-image"></i> Site Logo</a>
                         <a class="nav-link" id="v-pills-email-tab" data-toggle="pill" href="#v-pills-email" role="tab" aria-controls="v-pills-email" aria-selected="false"><i class="fa fa-fw fa-envelope"></i> Email Settings</a>
-                        <a class="nav-link" id="v-pills-social-tab" data-toggle="pill" href="#v-pills-social" role="tab" aria-controls="v-pills-social" aria-selected="false"><i class="fa fa-fw fa-comment-dots"></i> Social</a>
+                        <a class="nav-link" id="v-pills-social-tab" data-toggle="pill" href="#v-pills-social" role="tab" aria-controls="v-pills-social" aria-selected="false"><i class="fa fa-fw fa-comment-dots"></i> Social & RSS</a>
                     </div>
                 </div>
                 <div class="col-9">
@@ -102,10 +102,6 @@
                                     <small>file : jpg or png, max size : 2MB</small>
                                 </div>
                             </div>
-
-                            <div class="form-group">
-                                <button type="submit" name="upload_image" class="btn btn-info"><i class="fa fa-save"></i> <?=lang('upload_btn_value')?></button>
-                            </div>
                             
                         </div>
                         <div class="tab-pane fade" id="v-pills-email" role="tabpanel" aria-labelledby="v-pills-email-tab">
@@ -121,12 +117,12 @@
                                 <input type="text" name="admin_email" class="form-control" id="admin_email" value="<?=$this->_settings['admin_email']?>">
                                 <small>This is for admin email</small>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group mb-4">
                                 <label for="system_email">System Email</label>
                                 <input type="text" name="system_email" class="form-control" id="system_email" value="<?=$this->_settings['system_email']?>">
                                 <small>This is for system email and can't reply</small>
                             </div>
-                            <h4><i class="fa fa-fw fa-cogs"></i> Email System Settings</h4>
+                            <h4><i class="fa fa-fw fa-envelope-square"></i> Email System Settings</h4>
                             <hr>       
                             <div class="form-group">
                                 <label for="admin_email">Email Protocal</label>
@@ -139,35 +135,105 @@
                                     echo form_dropdown('email_protocal', $data, $this->_settings['email_protocal'], $att); 
                                 ?>
                             </div>
-                            <div class="form-group" id="sendmail_input" sytle="">
-                                <div class="form-group">
-                                    <label for="sendmail_path">Send Mail Path</label>
-                                    <input type="text" name="sendmail_path" class="form-control" id="sendmail_path" value="<?=$this->_settings['sendmail_path']?>">                                
-                                </div>
+                            <div class="form-group" id="sendmail_input" style="display:none;">                                
+                                <label for="sendmail_path">Send Mail Path</label>
+                                <input type="text" name="sendmail_path" class="form-control" id="sendmail_path" value="<?=$this->_settings['sendmail_path']?>">                                                                
                             </div>
-                            <div class="form-group smtp_input" id="smtp_user" sytle="">
-                                <div class="form-group">
-                                    <label for="smtp_user">SMTP User</label>
-                                    <input type="text" name="smtp_user" class="form-control" id="smtp_user" value="<?=$this->_settings['smtp_user']?>">                                
-                                </div>
+                            <div class="form-group smtp_input" id="smtp_user" style="display:none;">
+                                <label for="smtp_user">SMTP User</label>
+                                <input type="text" name="smtp_user" class="form-control" id="smtp_user" value="<?=$this->_settings['smtp_user']?>"> 
                             </div>
-                            <div class="form-group smtp_input" id="smtp_password" sytle="">
-                                <div class="form-group">
-                                    <label for="smtp_pass">SMTP Password</label>
-                                    <input type="text" name="smtp_pass" class="form-control" id="smtp_pass" value="<?=$this->_settings['smtp_pass']?>">                                
-                                </div>
+                            <div class="form-group smtp_input" id="smtp_password" style="display:none;">
+                                <label for="smtp_pass">SMTP Password</label>
+                                <input type="text" name="smtp_pass" class="form-control" id="smtp_pass" value="<?=$this->_settings['smtp_pass']?>">
                             </div>
-                            <div class="form-group smtp_input" id="smtp_port" sytle="">
-                                <div class="form-group">
-                                    <label for="smtp_port">SMTP Port</label>
-                                    <input type="text" name="smtp_port" class="form-control" id="smtp_port" value="<?=$this->_settings['smtp_port']?>">                                
-                                </div>
+                            <div class="form-group smtp_input" id="smtp_port" style="display:none;">
+                                <label for="smtp_port">SMTP Port</label>
+                                <input type="text" name="smtp_port" class="form-control" id="smtp_port" value="<?=$this->_settings['smtp_port']?>"> 
                             </div>                     
                         </div>
                         <div class="tab-pane fade" id="v-pills-social" role="tabpanel" aria-labelledby="v-pills-social-tab">
-                            <h4><i class="fa fa-fw fa-comment-dots"></i> Social Form</h4>
+                            <h4><i class="fa fa-fw fa-rss-square"></i> RSS</h4>
                             <hr>
-                            
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_atom_comments']?>" <?php echo set_checkbox('enable_atom_comments',1,($this->_settings['enable_atom_comments'] == 1) ? TRUE : FALSE); ?> name="enable_atom_comments" id="enable_atom_comments">
+                                <label class="form-check-label" for="enable_atom_comments">
+                                    enable_atom_comments
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_atom_posts']?>" <?php echo set_checkbox('enable_atom_posts',1,($this->_settings['enable_atom_posts'] == 1) ? TRUE : FALSE); ?> name="enable_atom_posts" id="enable_atom_posts">
+                                <label class="form-check-label" for="enable_atom_posts">
+                                enable_atom_posts
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_captcha']?>" <?php echo set_checkbox('enable_captcha',1,($this->_settings['enable_captcha'] == 1) ? TRUE : FALSE); ?> name="enable_captcha" id="enable_captcha">
+                                <label class="form-check-label" for="enable_captcha">
+                                enable_captcha
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_delicious']?>" <?php echo set_checkbox('enable_delicious',1,($this->_settings['enable_delicious'] == 1) ? TRUE : FALSE); ?> name="enable_delicious" id="enable_delicious">
+                                <label class="form-check-label" for="enable_delicious">
+                                enable_delicious
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_digg']?>" <?php echo set_checkbox('enable_digg',1,($this->_settings['enable_digg'] == 1) ? TRUE : FALSE); ?> name="enable_digg" id="enable_digg">
+                                <label class="form-check-label" for="enable_digg">
+                                enable_digg
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_furl']?>" <?php echo set_checkbox('enable_furl',1,($this->_settings['enable_furl'] == 1) ? TRUE : FALSE); ?> name="enable_furl" id="enable_furl">
+                                <label class="form-check-label" for="enable_furl">
+                                enable_digg
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_rss_comments']?>" <?php echo set_checkbox('enable_rss_comments',1,($this->_settings['enable_rss_comments'] == 1) ? TRUE : FALSE); ?> name="enable_rss_comments" id="enable_rss_comments">
+                                <label class="form-check-label" for="enable_rss_comments">
+                                enable_rss_comments
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_rss_posts']?>" <?php echo set_checkbox('enable_rss_posts',1,($this->_settings['enable_rss_posts'] == 1) ? TRUE : FALSE); ?> name="enable_rss_posts" id="enable_rss_posts">
+                                <label class="form-check-label" for="enable_rss_comments">
+                                enable_rss_posts
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_stumbleupon']?>" <?php echo set_checkbox('enable_stumbleupon',1,($this->_settings['enable_stumbleupon'] == 1) ? TRUE : FALSE); ?> name="enable_stumbleupon" id="enable_stumbleupon">
+                                <label class="form-check-label" for="enable_stumbleupon">
+                                enable_stumbleupon
+                                </label>
+                            </div>
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_technorati']?>" <?php echo set_checkbox('enable_technorati',1,($this->_settings['enable_technorati'] == 1) ? TRUE : FALSE); ?> name="enable_technorati" id="enable_technorati">
+                                <label class="form-check-label" for="enable_technorati">
+                                enable_technorati
+                                </label>
+                            </div>
+                            <br/>
+                            <h4><i class="fa fa-fw fa-link"></i> Social Links</h4>
+                            <hr>
+                            <?php 
+                            foreach($social_links as $links): 
+                            ?>
+                            <div class="form-group">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="<?=$links['icon']?>"></i></span>
+                                    </div>
+                                    <input class="form-check-input" type="checkbox" <?php echo set_checkbox("social[".$links['social_id']."]['active']",1,($links['active'] == 1) ? TRUE : FALSE); ?> value="<?=$links['active']?>" id="<?=$links['social_name']?>" name="social[<?=$links['social_id']?>]['active']">
+                                    <input type="text" class="form-control" name="social[<?=$links['social_id']?>]['social_link']" placeholder="<?=ucfirst($links['social_name']) ?> Link" value="<?=$links['social_url']?>">                                    
+                                </div>
+                            </div>
+                            <?php
+                            endforeach;
+                            ?>
+                                                       
                         </div>                        
                     </div>
                 </div>
