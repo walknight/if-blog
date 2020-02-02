@@ -1,4 +1,4 @@
-<?php if(count($featured) > 0){ ?>
+<?php if(isset($featured) && count($featured) > 0 ){ ?>
 <div class="row mb-2">
 <?php foreach($featured as $list): ?>
 <div class="col-md-6">

@@ -226,8 +226,8 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="<?=$links['icon']?>"></i></span>
                                     </div>
-                                    <input class="form-check-input" type="checkbox" <?php echo set_checkbox("social[".$links['social_id']."]['active']",1,($links['active'] == 1) ? TRUE : FALSE); ?> value="<?=$links['active']?>" id="<?=$links['social_name']?>" name="social[<?=$links['social_id']?>]['active']">
-                                    <input type="text" class="form-control" name="social[<?=$links['social_id']?>]['social_link']" placeholder="<?=ucfirst($links['social_name']) ?> Link" value="<?=$links['social_url']?>">                                    
+                                    <input class="form-check-input" type="checkbox" <?php echo set_checkbox("social[".$links['social_id']."]['active']",1,($links['active'] == 1) ? TRUE : FALSE); ?> id="<?=$links['social_name']?>" name="social[<?=$links['social_name']?>][active]">
+                                    <input type="text" class="form-control" name="social[<?=$links['social_name']?>][link]" placeholder="<?=ucfirst($links['social_name']) ?> Link" value="<?=$links['social_url']?>">                                    
                                 </div>
                             </div>
                             <?php

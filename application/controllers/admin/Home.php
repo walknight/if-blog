@@ -60,22 +60,14 @@ class Home extends MY_AdminController{
 
 	function save_settings()
 	{
-
-		if(count($_FILES) == 0)
-		{
-			$this->session->set_flashdata('error', lang('error_upload_multiple_value'));
-
-			redirect(site_url('admin/home/site_settings'));
-		}
-
-		print_r($_FILES);
-		exit;
-
-		if($_FILES['image_header']['size'] > 0 && $_FILES['image_header']['error'] == 0)
+		$logo_data = NULL;
+		$og_image_data = NULL;
+		//check site logo upload
+		if($_FILES['site_logo']['size'] > 0)
 		{					
 			//set upload file config
 			$config = array(
-				'upload_path' => $this->config->item('upload'),
+				'upload_path' => $this->config->item('images'),
 				'allowed_types' => 'jpg|png|jpeg', //change this if you want to more extension files
 				'overwrite' => TRUE,
 				'max_size' => "2048",
@@ -83,25 +75,44 @@ class Home extends MY_AdminController{
 
 			$this->load->library('upload', $config);
 
-			if ($this->upload->do_upload("image_header"))
+			if ($this->upload->do_upload("site_logo"))
 			{						
-				$dataimage = $this->upload->data();
+				$logo_data = $this->upload->data();
 			}
-			else
-			{
-				$dataimage = NULL;
-				$error = $this->upload->display_errors();
-				$this->session->set_flashdata('error', $error);
-			}
+
 		}
 		else
 		{
-			$dataimage = ($this->input->post('def_image')) ? $this->input->post('def_image') : NULL;
+			$logo_data = ($this->input->post('def_logo_image')) ? $this->input->post('def_logo_image') : NULL;
+		}
+
+		//check og_image upload
+		if($_FILES['og_image']['size'] > 0)
+		{					
+			//set upload file config
+			$config = array(
+				'upload_path' => $this->config->item('images'),
+				'allowed_types' => 'jpg|png|jpeg', //change this if you want to more extension files
+				'overwrite' => TRUE,
+				'max_size' => "2048",
+			);
+
+			$this->load->library('upload', $config);
+
+			if ($this->upload->do_upload("og_image"))
+			{						
+				$og_image_data = $this->upload->data();
+			}
+
+		}
+		else
+		{
+			$og_image_data = ($this->input->post('def_og_image')) ? $this->input->post('def_og_image') : NULL;
 		}
 		
 		//load model
 		$this->load->model('settings_model','sm');
-		
+
 		$this->_rules_settings();
 
 		//cek apakah form valid
@@ -112,13 +123,60 @@ class Home extends MY_AdminController{
 			
 		} else {
 			//buat variable array dari masing2 input form
-			$params_form = array();
-			$params_social = array();
-			
-			//save ke dalam database content
+			$params_form = array(
+				'admin_email' => $this->input->post('admin_email'),
+				'allow_registrations' => ($this->input->post('allow_registrations')) ? $this->input->post('allow_registration') : 0,
+				'contact_email' => $this->input->post('contact_email'),
+				'email_protocal' => $this->input->post('email_protocal'),
+				'enable_atom_comments' => ($this->input->post('enable_atom_comments')) ? $this->input->post('enable_atom_comments') : 0,
+				'enable_atom_posts' => ($this->input->post('enable_atom_posts')) ? $this->input->post('enable_atom_posts') : 0,
+				'enable_captcha' => ($this->input->post('enable_captcha')) ? $this->input->post('enable_captcha') : 0,
+				'enable_delicious' => ($this->input->post('enable_delicious')) ? $this->input->post('enable_delicious') : 0,
+				'enable_digg' => ($this->input->post('enable_digg')) ? $this->input->post('enable_digg') : 0,
+				'enable_furl' => ($this->input->post('enable_furl')) ? $this->input->post('enable_furl') : 0,
+				'enable_reddit' => ($this->input->post('enable_reddit')) ? $this->input->post('enable_reddit') : 0,
+				'enable_rss_comments' => ($this->input->post('enable_rss_comments')) ? $this->input->post('enable_rss_comments') : 0,
+				'enable_rss_posts' => ($this->input->post('enable_rss_posts')) ? $this->input->post('enable_rss_posts') : 0,
+				'enable_stumbleupon' => ($this->input->post('enable_stumbleupon')) ? $this->input->post('enable_stumbleupon') : 0,
+				'enable_technorati' => ($this->input->post('enable_technorati')) ? $this->input->post('enable_technorati') : 0,
+				'links_per_box' => $this->input->post('links_per_box'),
+				'meta_keywords' => $this->input->post('meta_keywords'),
+				'months_per_archive' => $this->input->post('months_per_archive'),
+				'offline_reason' => $this->input->post('offline_reason'),
+				'og_image' => ($og_image_data !== NULL || $og_image_data !== '') ? $og_image_data['file_name'] : $og_image_data,
+				'posts_per_page' => $this->input->post('posts_per_page'),
+				'recognize_user_agent' => ($this->input->post('recognize_user_agent')) ? $this->input->post('recognize_user_agent') : 0,
+				'sendmail_path' => ($this->input->post('sendmail_path')) ? $this->input->post('sendmail_path') : '',
+				'site_description' => $this->input->post('site_description'),
+ 				'site_enabled' => ($this->input->post('site_enabled')) ? $this->input->post('site_enabled') : 0,
+				'site_logo' => ($logo_data !== NULL || $logo_data !== '') ? $logo_data['file_name'] : $logo_data, 
+				'site_title' => $this->input->post('site_title'),
+				'smtp_host' => ($this->input->post('smtp_host')) ? $this->input->post('smtp_host') : '',
+				'smtp_pass' => ($this->input->post('smtp_pass')) ? $this->input->post('smtp_pass') : '',
+				'smtp_port' => ($this->input->post('smtp_port')) ? $this->input->post('smtp_port') : '',
+				'smtp_user' => ($this->input->post('smtp_user')) ? $this->input->post('smtp_user') : '',
+				'system_email' => $this->input->post('system_email'),
+			);	
+			echo "<pre>";
+			var_dump($og_image_data);
+			print_r($this->input->post());
+			echo "</pre>";
+			exit;
+			//save ke to database
 			$proses = $this->sm->update($params_form);
+			//update social links
+			foreach($this->input->post('social') as $key => $value):
+				if(array_key_exists('active', $value)){
+					$this->sm->update_social_links($key, array(
+							'social_url' => $value['link'],
+							'active' => (array_key_exists('active', $value)) ? 1 : 0,
+							'timestamp_update' => date('Y-m-d H:i:s')
+						)
+					);
+				}
+			endforeach;
 			
-			if($proses == 0){
+			if($proses){
 				$this->session->set_flashdata('success','Berhasil mengubah seting website');
 			} else {
 				$this->session->set_flashdata('error','Gagal mengubah seting website. Hubungi Administrator untuk masalah ini.');
@@ -141,11 +199,11 @@ class Home extends MY_AdminController{
 
 	function _rules_settings()
 	{
-		$this->form_validation->set_rules('title', lang('form_title_post'), 'trim|required');
-        $this->form_validation->set_rules('id_cat', lang('form_category_post'), 'trim|required');
-        $this->form_validation->set_rules('url_title' , lang('form_url_post'), 'trim|required');
-        $this->form_validation->set_rules('head_article', lang('form_head_article_post'), 'trim|required');
-        $this->form_validation->set_rules('main_article', lang('form_main_content_post'), 'trim|required');
+		$this->form_validation->set_rules('site_title', 'Site Title', 'trim|required');
+        $this->form_validation->set_rules('site_description', 'Site Description', 'trim|required');
+        $this->form_validation->set_rules('meta_keywords' , 'Meta Keywords', 'trim|required');
+        $this->form_validation->set_rules('offline_reason', 'Offline Reason', 'trim|required');
+        $this->form_validation->set_rules('site_enabled', 'Site Enable', 'required');
 	
 		//set parameter error form
 		$this->form_validation->set_error_delimiters('<span class="input-notification error png_bg">', '</span>');

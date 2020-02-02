@@ -22,4 +22,13 @@ class Page extends MY_Controller {
 	{
 
 	}
+
+	public function not_found()
+	{
+		$this->output->set_status_header('404');
+		
+		echo "Not found";
+
+		//$this->load->view('template', $data);
+	}
 }

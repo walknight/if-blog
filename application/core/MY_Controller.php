@@ -82,8 +82,7 @@ class MY_Controller extends CI_Controller {
 		{
 			if($section != NULL && is_array($section))
 			{
-				foreach($section as $key => $value):
-					
+				foreach($section as $key => $value):					
 					if(is_array($value)){
 						$this->load->section($key, $value['path'], $value['data']);
 					} else {

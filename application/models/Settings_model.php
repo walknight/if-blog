@@ -49,8 +49,9 @@ class Settings_model extends CI_Model
     }
     
     // Public methods
-	public function update_social_links($params)
+	public function update_social_links($name, $params)
 	{
+		$this->db->where('social_name', $name);
         $query = $this->db->update($this->_table['social_link'], $params);
 
         return $this->db->affected_rows();

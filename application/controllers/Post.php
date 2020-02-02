@@ -65,20 +65,21 @@ class Post extends MY_Controller
 			}
 
 			$this->_template['page'] = 'post/index';
+
+			//set section of the template
+			$load_section = array(
+				'menu' => 'themes/'.$this->_template['themes'].'/section/menu',
+				'footer' => 'themes/'.$this->_template['themes'].'/section/footer', 
+				'highlight' => array( 'path' => 'themes/'.$this->_template['themes'].'/section/highlight', 'data' => $sticky),
+				'featured' => array( 'path' => 'themes/'.$this->_template['themes'].'/section/featured', 'data' => $featured)
+			);
+
 		}
 		else
 		{
-			$this->_template['page'] = 'post/no_posts';
+			show_404();
 		}
-		
-		//set section of the template
-		$load_section = array(
-			'menu' => 'themes/'.$this->_template['themes'].'/section/menu',
-			'footer' => 'themes/'.$this->_template['themes'].'/section/footer', 
-			'highlight' => array( 'path' => 'themes/'.$this->_template['themes'].'/section/highlight', 'data' => $sticky),
-			'featured' => array( 'path' => 'themes/'.$this->_template['themes'].'/section/featured', 'data' => $featured)
-		);
-		
+	
 		$this->load_template($this->_template['page'], $data, $load_section);
 
 	}
