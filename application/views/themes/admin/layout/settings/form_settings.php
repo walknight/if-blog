@@ -79,7 +79,7 @@
                             <div class="form-group">
                                 <label for="site_logo">Site Logo</label>
                                 <div class="col-sm-8">
-                                    <?php if($this->_settings['site_logo'] != ''){ ?>
+                                    <?php if($this->_settings['site_logo'] !== ''){ ?>
                                         <img id="image_logo" alt="image logo" src="<?=base_url($this->_settings['site_logo'])?>" class="img-thumbnail" />
                                         <input type="hidden" name="def_logo_image" value="<?=$this->_settings['site_logo']?>" />  
                                     <?php } else { ?>
@@ -92,7 +92,7 @@
                             <div class="form-group">
                                 <label for="og_image">Og Image</label>
                                 <div class="col-sm-8">
-                                    <?php if($this->_settings['og_image'] != ''){ ?>
+                                    <?php if($this->_settings['og_image'] !== ''){ ?>
                                         <img id="image_og" alt="og image" src="<?=base_url($this->_settings['og_image'])?>" class="img-thumbnail" />
                                         <input type="hidden" name="def_og_image" value="<?=$this->_settings['og_image']?>" />  
                                     <?php } else { ?>
@@ -156,61 +156,61 @@
                             <h4><i class="fa fa-fw fa-rss-square"></i> RSS</h4>
                             <hr>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_atom_comments']?>" <?php echo set_checkbox('enable_atom_comments',1,($this->_settings['enable_atom_comments'] == 1) ? TRUE : FALSE); ?> name="enable_atom_comments" id="enable_atom_comments">
+                                <input class="form-check-input" type="checkbox" <?php echo set_checkbox('enable_atom_comments',1,($this->_settings['enable_atom_comments'] == 1) ? TRUE : FALSE); ?> name="enable_atom_comments" id="enable_atom_comments">
                                 <label class="form-check-label" for="enable_atom_comments">
                                     enable_atom_comments
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_atom_posts']?>" <?php echo set_checkbox('enable_atom_posts',1,($this->_settings['enable_atom_posts'] == 1) ? TRUE : FALSE); ?> name="enable_atom_posts" id="enable_atom_posts">
+                                <input class="form-check-input" type="checkbox" <?php echo set_checkbox('enable_atom_posts',1,($this->_settings['enable_atom_posts'] == 1) ? TRUE : FALSE); ?> name="enable_atom_posts" id="enable_atom_posts">
                                 <label class="form-check-label" for="enable_atom_posts">
                                 enable_atom_posts
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_captcha']?>" <?php echo set_checkbox('enable_captcha',1,($this->_settings['enable_captcha'] == 1) ? TRUE : FALSE); ?> name="enable_captcha" id="enable_captcha">
+                                <input class="form-check-input" type="checkbox" <?php echo set_checkbox('enable_captcha',1,($this->_settings['enable_captcha'] == 1) ? TRUE : FALSE); ?> name="enable_captcha" id="enable_captcha">
                                 <label class="form-check-label" for="enable_captcha">
                                 enable_captcha
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_delicious']?>" <?php echo set_checkbox('enable_delicious',1,($this->_settings['enable_delicious'] == 1) ? TRUE : FALSE); ?> name="enable_delicious" id="enable_delicious">
+                                <input class="form-check-input" type="checkbox" <?php echo set_checkbox('enable_delicious',1,($this->_settings['enable_delicious'] == 1) ? TRUE : FALSE); ?> name="enable_delicious" id="enable_delicious">
                                 <label class="form-check-label" for="enable_delicious">
                                 enable_delicious
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_digg']?>" <?php echo set_checkbox('enable_digg',1,($this->_settings['enable_digg'] == 1) ? TRUE : FALSE); ?> name="enable_digg" id="enable_digg">
+                                <input class="form-check-input" type="checkbox" <?php echo set_checkbox('enable_digg',1,($this->_settings['enable_digg'] == 1) ? TRUE : FALSE); ?> name="enable_digg" id="enable_digg">
                                 <label class="form-check-label" for="enable_digg">
                                 enable_digg
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_furl']?>" <?php echo set_checkbox('enable_furl',1,($this->_settings['enable_furl'] == 1) ? TRUE : FALSE); ?> name="enable_furl" id="enable_furl">
+                                <input class="form-check-input" type="checkbox" <?php echo set_checkbox('enable_furl',1,($this->_settings['enable_furl'] == 1) ? TRUE : FALSE); ?> name="enable_furl" id="enable_furl">
                                 <label class="form-check-label" for="enable_furl">
-                                enable_digg
+                                enable_furl
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_rss_comments']?>" <?php echo set_checkbox('enable_rss_comments',1,($this->_settings['enable_rss_comments'] == 1) ? TRUE : FALSE); ?> name="enable_rss_comments" id="enable_rss_comments">
+                                <input class="form-check-input" type="checkbox" <?php echo set_checkbox('enable_rss_comments',1,($this->_settings['enable_rss_comments'] == 1) ? TRUE : FALSE); ?> name="enable_rss_comments" id="enable_rss_comments">
                                 <label class="form-check-label" for="enable_rss_comments">
                                 enable_rss_comments
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_rss_posts']?>" <?php echo set_checkbox('enable_rss_posts',1,($this->_settings['enable_rss_posts'] == 1) ? TRUE : FALSE); ?> name="enable_rss_posts" id="enable_rss_posts">
+                                <input class="form-check-input" type="checkbox" <?php echo set_checkbox('enable_rss_posts',1,($this->_settings['enable_rss_posts'] == 1) ? TRUE : FALSE); ?> name="enable_rss_posts" id="enable_rss_posts">
                                 <label class="form-check-label" for="enable_rss_comments">
                                 enable_rss_posts
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_stumbleupon']?>" <?php echo set_checkbox('enable_stumbleupon',1,($this->_settings['enable_stumbleupon'] == 1) ? TRUE : FALSE); ?> name="enable_stumbleupon" id="enable_stumbleupon">
+                                <input class="form-check-input" type="checkbox" <?php echo set_checkbox('enable_stumbleupon',1,($this->_settings['enable_stumbleupon'] == 1) ? TRUE : FALSE); ?> name="enable_stumbleupon" id="enable_stumbleupon">
                                 <label class="form-check-label" for="enable_stumbleupon">
                                 enable_stumbleupon
                                 </label>
                             </div>
                             <div class="form-check mb-4">
-                                <input class="form-check-input" type="checkbox" value="<?=$this->_settings['enable_technorati']?>" <?php echo set_checkbox('enable_technorati',1,($this->_settings['enable_technorati'] == 1) ? TRUE : FALSE); ?> name="enable_technorati" id="enable_technorati">
+                                <input class="form-check-input" type="checkbox" <?php echo set_checkbox('enable_technorati',1,($this->_settings['enable_technorati'] == 1) ? TRUE : FALSE); ?> name="enable_technorati" id="enable_technorati">
                                 <label class="form-check-label" for="enable_technorati">
                                 enable_technorati
                                 </label>

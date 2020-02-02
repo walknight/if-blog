@@ -74,7 +74,8 @@ class Settings_model extends CI_Model
 			$this->db->update($this->_table['settings']);
 		endforeach;
 		
-		return $this->db->affected_rows();;
+		//hack to return true
+		return true;
 	}
 	
 

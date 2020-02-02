@@ -6,6 +6,20 @@ $(document).ready(function(){
         readURL(this, '#image_logo');
     });
 
+    //for load selected
+    var selected = $('#email_protocal').val();
+    if(selected == 'sendmail'){
+        $('#sendmail_input').show();
+        $('.smtp_input').hide();   
+    } else if(selected == 'smtp'){
+        $('#sendmail_input').hide();
+        $('.smtp_input').show();
+    } else {
+        $('#sendmail_input').hide();
+        $('.smtp_input').hide();
+    }
+
+    //for change select
     $('#email_protocal').change(function(){
         if(this.value == 'sendmail'){
             $('#sendmail_input').show();

@@ -125,30 +125,30 @@ class Home extends MY_AdminController{
 			//buat variable array dari masing2 input form
 			$params_form = array(
 				'admin_email' => $this->input->post('admin_email'),
-				'allow_registrations' => ($this->input->post('allow_registrations')) ? $this->input->post('allow_registration') : 0,
+				'allow_registrations' => ($this->input->post('allow_registrations')) ? 1 : 0,
 				'contact_email' => $this->input->post('contact_email'),
 				'email_protocal' => $this->input->post('email_protocal'),
-				'enable_atom_comments' => ($this->input->post('enable_atom_comments')) ? $this->input->post('enable_atom_comments') : 0,
-				'enable_atom_posts' => ($this->input->post('enable_atom_posts')) ? $this->input->post('enable_atom_posts') : 0,
-				'enable_captcha' => ($this->input->post('enable_captcha')) ? $this->input->post('enable_captcha') : 0,
-				'enable_delicious' => ($this->input->post('enable_delicious')) ? $this->input->post('enable_delicious') : 0,
-				'enable_digg' => ($this->input->post('enable_digg')) ? $this->input->post('enable_digg') : 0,
-				'enable_furl' => ($this->input->post('enable_furl')) ? $this->input->post('enable_furl') : 0,
-				'enable_reddit' => ($this->input->post('enable_reddit')) ? $this->input->post('enable_reddit') : 0,
-				'enable_rss_comments' => ($this->input->post('enable_rss_comments')) ? $this->input->post('enable_rss_comments') : 0,
-				'enable_rss_posts' => ($this->input->post('enable_rss_posts')) ? $this->input->post('enable_rss_posts') : 0,
-				'enable_stumbleupon' => ($this->input->post('enable_stumbleupon')) ? $this->input->post('enable_stumbleupon') : 0,
-				'enable_technorati' => ($this->input->post('enable_technorati')) ? $this->input->post('enable_technorati') : 0,
+				'enable_atom_comments' => ($this->input->post('enable_atom_comments')) ? 1 : 0,
+				'enable_atom_posts' => ($this->input->post('enable_atom_posts')) ? 1 : 0,
+				'enable_captcha' => ($this->input->post('enable_captcha')) ? 1 : 0,
+				'enable_delicious' => ($this->input->post('enable_delicious')) ? 1 : 0,
+				'enable_digg' => ($this->input->post('enable_digg')) ? 1 : 0,
+				'enable_furl' => ($this->input->post('enable_furl')) ? 1 : 0,
+				'enable_reddit' => ($this->input->post('enable_reddit')) ? 1 : 0,
+				'enable_rss_comments' => ($this->input->post('enable_rss_comments')) ? 1 : 0,
+				'enable_rss_posts' => ($this->input->post('enable_rss_posts')) ? 1 : 0,
+				'enable_stumbleupon' => ($this->input->post('enable_stumbleupon')) ? 1 : 0,
+				'enable_technorati' => ($this->input->post('enable_technorati')) ? 1 : 0,
 				'links_per_box' => $this->input->post('links_per_box'),
 				'meta_keywords' => $this->input->post('meta_keywords'),
 				'months_per_archive' => $this->input->post('months_per_archive'),
 				'offline_reason' => $this->input->post('offline_reason'),
 				'og_image' => ($og_image_data !== NULL || $og_image_data !== '') ? $og_image_data['file_name'] : $og_image_data,
 				'posts_per_page' => $this->input->post('posts_per_page'),
-				'recognize_user_agent' => ($this->input->post('recognize_user_agent')) ? $this->input->post('recognize_user_agent') : 0,
+				'recognize_user_agent' => ($this->input->post('recognize_user_agent')) ? 1 : 0,
 				'sendmail_path' => ($this->input->post('sendmail_path')) ? $this->input->post('sendmail_path') : '',
 				'site_description' => $this->input->post('site_description'),
- 				'site_enabled' => ($this->input->post('site_enabled')) ? $this->input->post('site_enabled') : 0,
+ 				'site_enabled' => ($this->input->post('site_enabled')) ? 1 : 0,
 				'site_logo' => ($logo_data !== NULL || $logo_data !== '') ? $logo_data['file_name'] : $logo_data, 
 				'site_title' => $this->input->post('site_title'),
 				'smtp_host' => ($this->input->post('smtp_host')) ? $this->input->post('smtp_host') : '',
@@ -157,11 +157,7 @@ class Home extends MY_AdminController{
 				'smtp_user' => ($this->input->post('smtp_user')) ? $this->input->post('smtp_user') : '',
 				'system_email' => $this->input->post('system_email'),
 			);	
-			echo "<pre>";
-			var_dump($og_image_data);
-			print_r($this->input->post());
-			echo "</pre>";
-			exit;
+		
 			//save ke to database
 			$proses = $this->sm->update($params_form);
 			//update social links
@@ -177,9 +173,9 @@ class Home extends MY_AdminController{
 			endforeach;
 			
 			if($proses){
-				$this->session->set_flashdata('success','Berhasil mengubah seting website');
+				$this->session->set_flashdata('success',lang('update_setting_success'));
 			} else {
-				$this->session->set_flashdata('error','Gagal mengubah seting website. Hubungi Administrator untuk masalah ini.');
+				$this->session->set_flashdata('error', lang('update_setting_failed'));
 			}
 			
 			redirect(site_url('admin/home/site_settings'));
