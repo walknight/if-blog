@@ -80,7 +80,7 @@
                                 <label for="site_logo">Site Logo</label>
                                 <div class="col-sm-8">
                                     <?php if($this->_settings['site_logo'] !== ''){ ?>
-                                        <img id="image_logo" alt="image logo" src="<?=base_url($this->_settings['site_logo'])?>" class="img-thumbnail" />
+                                        <img id="image_logo" alt="image logo" src="<?=base_url($this->config->item('images').$this->_settings['site_logo'])?>" class="img-thumbnail" />
                                         <input type="hidden" name="def_logo_image" value="<?=$this->_settings['site_logo']?>" />  
                                     <?php } else { ?>
                                         <img id="image_logo" alt="image logo" src="#" class="img-thumbnail" />
@@ -93,7 +93,7 @@
                                 <label for="og_image">Og Image</label>
                                 <div class="col-sm-8">
                                     <?php if($this->_settings['og_image'] !== ''){ ?>
-                                        <img id="image_og" alt="og image" src="<?=base_url($this->_settings['og_image'])?>" class="img-thumbnail" />
+                                        <img id="image_og" alt="og image" src="<?=base_url($this->config->item('images').$this->_settings['og_image'])?>" class="img-thumbnail" />
                                         <input type="hidden" name="def_og_image" value="<?=$this->_settings['og_image']?>" />  
                                     <?php } else { ?>
                                         <img id="image_og" alt="og image" src="#" class="img-thumbnail" />
