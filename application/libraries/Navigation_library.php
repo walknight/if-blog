@@ -19,8 +19,8 @@ class Navigation_library
 	// Public methods
 	public function get_navigation()
 	{
-		$this->CI->db->select('title, description, url, external, position');
-		$this->CI->db->order_by('position', 'ASC'); 
+		$this->CI->db->select('title, description, url, external, order');
+		$this->CI->db->order_by('order', 'ASC'); 
 		
 		$query = $this->CI->db->get($this->_table['navigation']);
 			

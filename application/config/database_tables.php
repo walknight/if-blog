@@ -13,6 +13,7 @@ $config['comments'] 			= 'comments';
 $config['languages']			= 'languages';
 $config['links'] 				= 'links';
 $config['navigation'] 			= 'navigation';
+$config['nav_groups'] 			= 'nav_groups';
 $config['pages'] 				= 'pages';
 $config['pages'] 				= 'pages';
 $config['posts'] 				= 'posts';

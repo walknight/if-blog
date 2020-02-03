@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="<?=base_url('assets/themes/admin/css/fontawesome-all.min.css')?>">
     <link rel="stylesheet" href="<?=base_url('assets/themes/admin/css/datatables.min.css')?>">
     <link rel="stylesheet" href="<?=base_url('assets/themes/admin/css/fullcalendar.min.css')?>">
-    <link rel="stylesheet" href="<?=base_url('assets/themes/admin/css/bootadmin.min.css')?>">
+    <link rel="stylesheet" href="<?=base_url('assets/themes/admin/css/bootadmin.css')?>">
     <?php
     
     foreach($css as $file){

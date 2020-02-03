@@ -71,8 +71,13 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 	* @param array
 	* @return object
 	*/ 	
-	public function getWhere($params, $order_by = NULL)
+	public function getWhere($field = "", $params, $order_by = NULL)
 	{
+		if($field != "")
+		{
+			$this->db->select($field);
+		}
+		
 		if($order_by)
 		{
 			$this->db->order_by($order_by);
