@@ -11,7 +11,7 @@
  Target Server Version : 50719
  File Encoding         : 65001
 
- Date: 28/01/2020 15:34:58
+ Date: 03/02/2020 12:16:28
 */
 
 SET NAMES utf8mb4;
@@ -71,7 +71,7 @@ CREATE TABLE `if_groups`  (
 -- ----------------------------
 -- Records of if_groups
 -- ----------------------------
-INSERT INTO `if_groups` VALUES (1, 'admin', 'Administrator', '[\"accessModPage\",\"createPage\",\"updatePage\",\"viewPage\",\"deletePage\",\"accessModPost\",\"createPost\",\"updatePost\",\"viewPost\",\"deletePost\",\"accessModCategory\",\"createCategory\",\"updateCategory\",\"viewCategory\",\"deleteCategory\",\"accessModUser\",\"createUser\",\"updateUser\",\"viewUser\",\"deleteUser\",\"createGroupUser\",\"updateGroupUser\",\"viewGroupUser\",\"deleteGroupUser\",\"updateSetting\",\"viewSetting\"]');
+INSERT INTO `if_groups` VALUES (1, 'admin', 'Administrator', '[\"accessModNavigation\",\"createNavigation\",\"updateNavigation\",\"viewNavigation\",\"deleteNavigation\",\"accessModPage\",\"createPage\",\"updatePage\",\"viewPage\",\"deletePage\",\"accessModPost\",\"createPost\",\"updatePost\",\"viewPost\",\"deletePost\",\"accessModCategory\",\"createCategory\",\"updateCategory\",\"viewCategory\",\"deleteCategory\",\"accessModUser\",\"createUser\",\"updateUser\",\"viewUser\",\"deleteUser\",\"createGroupUser\",\"updateGroupUser\",\"viewGroupUser\",\"deleteGroupUser\",\"updateSetting\",\"viewSetting\"]');
 INSERT INTO `if_groups` VALUES (2, 'members', 'General User', '[\"createCategory\",\"updateCategory\",\"viewCategory\",\"deleteCategory\",\"accessModUser\",\"createUser\",\"updateUser\",\"viewUser\",\"deleteUser\",\"createGroupUser\",\"updateGroupUser\",\"viewGroupUser\",\"deleteGroupUser\",\"updateSetting\",\"viewSetting\"]');
 
 -- ----------------------------
@@ -124,7 +124,26 @@ CREATE TABLE `if_login_attempts`  (
   `login` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `time` int(11) UNSIGNED NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for if_nav_groups
+-- ----------------------------
+DROP TABLE IF EXISTS `if_nav_groups`;
+CREATE TABLE `if_nav_groups`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `abbrev` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci COMMENT = 'Navigation groupings. Eg, header, sidebar, footer, etc' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of if_nav_groups
+-- ----------------------------
+INSERT INTO `if_nav_groups` VALUES (1, 'Header', 'header');
+INSERT INTO `if_nav_groups` VALUES (2, 'Sidebar', 'sidebar');
+INSERT INTO `if_nav_groups` VALUES (3, 'Footer', 'footer');
+INSERT INTO `if_nav_groups` VALUES (4, 'Topbar', 'topbar');
 
 -- ----------------------------
 -- Table structure for if_navigation
@@ -132,20 +151,22 @@ CREATE TABLE `if_login_attempts`  (
 DROP TABLE IF EXISTS `if_navigation`;
 CREATE TABLE `if_navigation`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) NULL DEFAULT 0,
   `title` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `description` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `external` enum('0','1') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
-  `position` int(11) NULL DEFAULT 0,
+  `id_groups` int(11) NULL DEFAULT 0,
+  `order` int(5) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of if_navigation
 -- ----------------------------
-INSERT INTO `if_navigation` VALUES (1, 'Home', 'Index', 'index.php', '0', 1);
-INSERT INTO `if_navigation` VALUES (2, 'Archive', 'Archive', 'blog/archive/', '0', 2);
-INSERT INTO `if_navigation` VALUES (3, 'Subscribe', 'menu for subscribe', 'home/subscribe', '0', 3);
+INSERT INTO `if_navigation` VALUES (1, 0, 'Home', 'Index', 'index.php', '0', 0, 0);
+INSERT INTO `if_navigation` VALUES (2, 0, 'Archive', 'Archive', 'blog/archive/', '0', 0, 0);
+INSERT INTO `if_navigation` VALUES (3, 0, 'Subscribe', 'menu for subscribe', 'home/subscribe', '0', 0, 0);
 
 -- ----------------------------
 -- Table structure for if_pages
@@ -167,12 +188,14 @@ CREATE TABLE `if_pages`  (
   `create_at` datetime(0) NULL DEFAULT NULL,
   `update_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of if_pages
 -- ----------------------------
 INSERT INTO `if_pages` VALUES (3, 'Home', 'home', 1, '2020-01-29 07:00:00', 'Homepage', 'home,page', 'Homepage', 'active', '', 1, NULL, '2020-01-28 00:46:19', NULL);
+INSERT INTO `if_pages` VALUES (4, 'About Me', 'about-me', 1, '2020-02-03 07:00:00', '<div style=\"color: rgb(187, 187, 187); background-color: rgb(40, 44, 52); font-family: Consolas, \"Courier New\", monospace; line-height: 19px; white-space: pre;\">Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum fugit numquam distinctio, vitae ex aut ab ut qui doloremque molestias totam, expedita delectus nemo repudiandae, cumque quibusdam blanditiis molestiae commodi.</div>', 'about,lorem,ipsu', 'lorem ipsum about page', 'active', '', 0, NULL, '2020-02-03 11:00:48', NULL);
+INSERT INTO `if_pages` VALUES (5, 'Term and Condition', 'term-and-condition', 1, '2020-02-03 07:00:00', '<div style=\"color: rgb(187, 187, 187); background-color: rgb(40, 44, 52); font-family: Consolas, \"Courier New\", monospace; line-height: 19px; white-space: pre;\">Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum fugit numquam distinctio, vitae ex aut ab ut qui doloremque molestias totam, expedita delectus nemo repudiandae, cumque quibusdam blanditiis molestiae commodi.</div>', 'term,condition,', 'lorem ipsum term condition', 'active', '', 0, NULL, '2020-02-03 11:01:46', NULL);
 
 -- ----------------------------
 -- Table structure for if_posts
@@ -245,10 +268,10 @@ CREATE TABLE `if_settings`  (
 -- ----------------------------
 -- Records of if_settings
 -- ----------------------------
-INSERT INTO `if_settings` VALUES ('admin_email', 'admin@simplacms.com');
+INSERT INTO `if_settings` VALUES ('admin_email', 'admin@gmail.com');
 INSERT INTO `if_settings` VALUES ('allow_registrations', '0');
-INSERT INTO `if_settings` VALUES ('contact_email', ' ');
-INSERT INTO `if_settings` VALUES ('email_protocal', ' ');
+INSERT INTO `if_settings` VALUES ('contact_email', ' support@gmail.com');
+INSERT INTO `if_settings` VALUES ('email_protocal', 'sendmail');
 INSERT INTO `if_settings` VALUES ('enable_atom_comments', '1');
 INSERT INTO `if_settings` VALUES ('enable_atom_posts', '1');
 INSERT INTO `if_settings` VALUES ('enable_captcha', '0');
@@ -264,19 +287,19 @@ INSERT INTO `if_settings` VALUES ('links_per_box', '5');
 INSERT INTO `if_settings` VALUES ('meta_keywords', 'cms,simpla,ci,codeigniter,code,hml,css,cms blog,openblog');
 INSERT INTO `if_settings` VALUES ('months_per_archive', '5');
 INSERT INTO `if_settings` VALUES ('offline_reason', 'scriptnya blom jadi..hahahahahah...hihihihihihih...heheheheh');
-INSERT INTO `if_settings` VALUES ('og_image', ' ');
+INSERT INTO `if_settings` VALUES ('og_image', 'icon.png');
 INSERT INTO `if_settings` VALUES ('posts_per_page', '5');
 INSERT INTO `if_settings` VALUES ('recognize_user_agent', '1');
-INSERT INTO `if_settings` VALUES ('sendmail_path', ' ');
+INSERT INTO `if_settings` VALUES ('sendmail_path', ' /path/to/path');
 INSERT INTO `if_settings` VALUES ('site_description', 'Simpla CMS is just simple CMS for Blog like wordpress but still different.');
 INSERT INTO `if_settings` VALUES ('site_enabled', '1');
-INSERT INTO `if_settings` VALUES ('site_logo', ' ');
+INSERT INTO `if_settings` VALUES ('site_logo', 'logo_ifcode_color.png');
 INSERT INTO `if_settings` VALUES ('site_title', 'If-Blog');
-INSERT INTO `if_settings` VALUES ('smtp_host', ' ');
+INSERT INTO `if_settings` VALUES ('smtp_host', '');
 INSERT INTO `if_settings` VALUES ('smtp_pass', ' ');
 INSERT INTO `if_settings` VALUES ('smtp_port', ' ');
 INSERT INTO `if_settings` VALUES ('smtp_user', ' ');
-INSERT INTO `if_settings` VALUES ('system_email', ' ');
+INSERT INTO `if_settings` VALUES ('system_email', 'noreply@gmail.com');
 
 -- ----------------------------
 -- Table structure for if_sidebar
@@ -318,32 +341,32 @@ CREATE TABLE `if_social_link`  (
 -- ----------------------------
 -- Records of if_social_link
 -- ----------------------------
-INSERT INTO `if_social_link` VALUES (1, 'twitter', '', 0, 'fab fa-twitter', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (2, 'facebook', '', 1, 'fab fa-facebook-f', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (3, 'linkedin', '', 0, 'fab fa-linkedin', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (4, 'youtube', '', 0, 'fab fa-youtube', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (5, 'google', '', 0, 'fab fa-google', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (6, 'pinterest', '', 0, 'fab fa-pinterest', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (7, 'foursquare', '', 0, 'fab fa-foursquare', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (8, 'myspace', '', 0, 'fa fa-link', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (9, 'soundcloud', '', 0, 'fab fa-soundcloud', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (10, 'spotify', '', 0, 'fab fa-spotify', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (11, 'lastfm', '', 0, 'fab fa-lastfm', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (12, 'vimeo', '', 0, 'fab fa-vimeo-v', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (13, 'dailymotion', '', 0, 'fa fa-link', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (14, 'vine', '', 0, 'fab fa-vine', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (15, 'flickr', '', 0, 'fab fa-flickr', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (16, 'instagram', '', 1, 'fab fa-instagram', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (17, 'tumblr', '', 0, 'fab fa-tumblr', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (18, 'reddit', '', 0, 'fab fa-reddit', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (19, 'envato', '', 0, 'fa fa-link', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (20, 'github', '', 0, 'fab fa-github', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (21, 'tripadvisor', '', 0, 'fab fa-tripadvisor', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (22, 'stackoverflow', '', 0, 'fab fa-stack-overflow', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (23, 'persona', '', 0, 'fa fa-link', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (24, 'odnoklassniki', '', 0, 'fab fa-odnoklassniki', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (25, 'vk', '', 0, 'fab fa-vk', '2017-12-28 09:28:04');
-INSERT INTO `if_social_link` VALUES (26, 'gitlab', '', 0, 'fab fa-gitlab', '2017-12-28 09:28:04');
+INSERT INTO `if_social_link` VALUES (1, 'twitter', 'aaaaaaaaaaaaaaaa', 1, 'fab fa-twitter', '2020-02-03 09:04:36');
+INSERT INTO `if_social_link` VALUES (2, 'facebook', 'aaaaaaaaaaaaaaa', 1, 'fab fa-facebook-f', '2020-02-03 09:04:36');
+INSERT INTO `if_social_link` VALUES (3, 'linkedin', 'aaaaaaaaaaaaaaa', 1, 'fab fa-linkedin', '2020-02-03 09:04:36');
+INSERT INTO `if_social_link` VALUES (4, 'youtube', 'aaaaaaaaaaaaa', 1, 'fab fa-youtube', '2020-02-03 09:04:36');
+INSERT INTO `if_social_link` VALUES (5, 'google', 'bbbbbbbbbbbbbb', 1, 'fab fa-google', '2020-02-03 09:04:36');
+INSERT INTO `if_social_link` VALUES (6, 'pinterest', '', 0, 'fab fa-pinterest', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (7, 'foursquare', '', 0, 'fab fa-foursquare', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (8, 'myspace', '', 0, 'fa fa-link', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (9, 'soundcloud', '', 0, 'fab fa-soundcloud', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (10, 'spotify', '', 0, 'fab fa-spotify', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (11, 'lastfm', '', 0, 'fab fa-lastfm', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (12, 'vimeo', '', 0, 'fab fa-vimeo-v', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (13, 'dailymotion', '', 0, 'fa fa-link', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (14, 'vine', '', 0, 'fab fa-vine', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (15, 'flickr', '', 0, 'fab fa-flickr', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (16, 'instagram', 'aaaaaaaaaaaaaaaaaaaaa', 1, 'fab fa-instagram', '2020-02-03 09:04:36');
+INSERT INTO `if_social_link` VALUES (17, 'tumblr', '', 0, 'fab fa-tumblr', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (18, 'reddit', '', 0, 'fab fa-reddit', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (19, 'envato', '', 0, 'fa fa-link', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (20, 'github', '', 0, 'fab fa-github', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (21, 'tripadvisor', '', 0, 'fab fa-tripadvisor', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (22, 'stackoverflow', '', 0, 'fab fa-stack-overflow', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (23, 'persona', '', 0, 'fa fa-link', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (24, 'odnoklassniki', '', 0, 'fab fa-odnoklassniki', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (25, 'vk', '', 0, 'fab fa-vk', '2020-02-02 14:05:03');
+INSERT INTO `if_social_link` VALUES (26, 'gitlab', '', 0, 'fab fa-gitlab', '2020-02-02 14:05:03');
 
 -- ----------------------------
 -- Table structure for if_tags
@@ -452,7 +475,7 @@ CREATE TABLE `if_users`  (
 -- ----------------------------
 -- Records of if_users
 -- ----------------------------
-INSERT INTO `if_users` VALUES (1, '127.0.0.1', 'administrator', '$2y$12$rem44wTGGGoeTqiXrU6o1e.6FVYzZb8AmrxC2qOxLT0bhk4p2vHGa', 'admin@admin.com', NULL, '', NULL, NULL, NULL, NULL, NULL, 1268889823, 1580196020, 1, 'Admin', 'istrator', 'ADMIN', '0');
+INSERT INTO `if_users` VALUES (1, '127.0.0.1', 'administrator', '$2y$12$rem44wTGGGoeTqiXrU6o1e.6FVYzZb8AmrxC2qOxLT0bhk4p2vHGa', 'admin@admin.com', NULL, '', NULL, NULL, NULL, NULL, NULL, 1268889823, 1580695456, 1, 'Admin', 'istrator', 'ADMIN', '0');
 
 -- ----------------------------
 -- Table structure for if_users_groups
