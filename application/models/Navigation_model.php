@@ -76,6 +76,39 @@ class Navigation_model extends CI_Model{
 			return FALSE;
 		}
 	}
+
+	/** 
+	* Get and return all records from DB table where clause.
+	* 
+	* @access public 
+	* @param string
+	* @return object
+	*/ 
+	public function getWhere($where, $order_by="", $limit="",$offset="")
+	{
+		if($order_by != "")
+		{
+			$this->db->order_by($order_by);
+		}
+        
+        if($limit != "")
+        {
+            $this->db->limit($limit,$offset);
+		}
+		
+		$this->db->where($where);
+        
+		$result = $this->db->get($this->_table['navigation']);
+		
+		if($result->num_rows() > 0)
+		{
+			return $result;
+		}
+		else 
+		{
+			return FALSE;
+		}
+	}
 	
 	/** 
 	* Add new record to DB table.
@@ -84,18 +117,18 @@ class Navigation_model extends CI_Model{
 	* @param array
 	* @return bool
 	*/ 
-	public function add($input_data)
+	public function add($input_data, $group=1)
 	{
-		$input_data['order'] = $this->get_max_number_order() + 1;
+		$input_data['order'] = $this->get_max_number_order($group) + 1;
 		
 		$this->db->insert($this->_table['navigation'], $input_data);
 		$query = $this->db->insert_id();
 		
 		if($query > 0)
 		{
-			return true;
+			return $query;
 		} else {
-			return false;
+			return FALSE;
 		}
 	}
 	
@@ -141,11 +174,26 @@ class Navigation_model extends CI_Model{
 	* @param array
 	* @return bool
 	*/ 
-	public function delete($params)
+	public function delete($id)
 	{
-		$this->db->delete($this->_table['navigation'], $params);
+		//get data first
+		$get = $this->db->get_where($this->_table['navigation'], array('id' => $id))->row();
 		
-        $this->reorganize_navigation();
+		//delete the children
+		$this->db->where('parent_id', $id);
+		$this->db->delete($this->_table['navigation']);
+
+		//delete parent
+		$this->db->where('id', $id);
+		$delete = $this->db->delete($this->_table['navigation']);
+		
+		$this->reorganize_navigation($get->id_groups);
+		
+		if($delete > 0){
+			return TRUE;
+		} else {
+			return FALSE;
+		}
 	}
 	
 	/** 
@@ -156,15 +204,16 @@ class Navigation_model extends CI_Model{
 	* @return max number order
 	*/ 
 	
-	public function get_max_number_order()
+	public function get_max_number_order($group)
 	{
 		$this->db->select_max('order');
+		$this->db->where('id_groups', $group);
 		
 		$query = $this->db->get($this->_table['navigation']);
 		
 		$order = $query->row();
 		
-		return $order->menu_order;
+		return $order->order;
 	}
     
     /** 
@@ -196,9 +245,10 @@ class Navigation_model extends CI_Model{
 	* @param 
 	* @return NULL
 	*/
-	public function reorganize_navigation()
+	public function reorganize_navigation($group_id)
 	{
 		$this->db->select('id');
+		$this->db->where('id_groups', $group_id);
 		
 		$query = $this->db->get($this->_table['navigation']);
 			
@@ -212,7 +262,7 @@ class Navigation_model extends CI_Model{
 			{
 				$this->db->set('order', ++$i);
 				$this->db->where('id', $row['id']);
-				$this->db->update($this->_table);
+				$this->db->update($this->_table['navigation']);
 			}
 		}
 	}

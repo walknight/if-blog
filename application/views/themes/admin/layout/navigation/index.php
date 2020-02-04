@@ -16,7 +16,7 @@
                             if(isset($page_list)){
                                 foreach($page_list as $list):
                             ?>
-                            <div class="form-check">
+                            <div class="form-check" id="menu_page">
                                 <input class="form-check-input" type="checkbox" name="menu_page[]" data-url="<?='page/'.$list['url_title']?>" value="<?=$list['id']?>" id="PageMenu">
                                 <input type="hidden" name="menu_page_name[]" value="<?=$list['title']?>" />
                                 <label class="form-check-label" for="menu_page">
@@ -67,6 +67,10 @@
                         </div>
                         <div class="card-body">
                             <div class="form-group">
+                                <label for="menu_name_external">Menu Name</label>
+                                <input type="text" class="form-control" id="MenuNameExternal" name="menu_name_external">
+                            </div>
+                            <div class="form-group">
                                 <label for="menu_external">URL External Link</label>
                                 <input type="text" class="form-control" id="ExternalMenu" name="menu_external">
                             </div>
@@ -83,17 +87,16 @@
         <div class="col-9">
             <div class="card">
                 <div class="card-header bg-white font-weight-bold">
-                    Menu List 
+                    Menu Group : <?=$group_list[$group_select]?>
                     <?php                        
                         $attr = 'id="menu_group" class="form-control-sm col-1 float-right"';
-                        echo form_dropdown('menu_list', $group_list, '1', $attr);
+                        echo form_dropdown('menu_list', $group_list, $group_select, $attr);
                     ?>
                 </div>
 
                 <div class="card-body">
                     <div class="dd nestable" id="nestable">
                         <ol class="dd-list">
-
                         <!--- Initial Menu Items --->
                         <?php                         
                         if(isset($nav_list)){
@@ -109,9 +112,7 @@
                             endforeach;
                         }
                         ?>
-                                              
                         <!--------------------------->
-
                         </ol>
                     </div>
                 </div>
