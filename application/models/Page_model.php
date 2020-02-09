@@ -161,22 +161,20 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 	}
 	
 	/** 
-	* Get max ordering number
+	* Get count all row data
 	* 
 	* @access public
 	* @param array
 	* @return bool
 	*/ 
 	
-	public function get_max_number_order($table="")
+	public function get_count_all($where=null)
 	{
-		$this->db->select_max('ordering');
-		if($table == "")
-			$query = $this->db->get($this->_table['pages']);
-		else
-			$query = $this->db->get($table);
-		
-		return $return;
+		if($where != null && is_array($where)){
+			$this->db->where($where);
+		}
+	
+		return $this->db->count_all_results($this->_table['pages']);
 	}
 }
 

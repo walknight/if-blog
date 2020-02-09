@@ -9,10 +9,13 @@ class Home extends MY_AdminController{
 		parent::__construct();
 
 		//load model,library,helper     
+		$array_model = array('page_model','post_model','comments_model');
+		$this->load->model($array_model);
         $this->load->library(array('ion_auth','form_validation'));
 		$this->load->helper(['language','form']);
 		
 		$this->lang->load('general');
+		$this->lang->load('posts');
 	
 		if(!$this->ion_auth->logged_in()){
 			redirect(site_url('admin/auth/login'));
@@ -21,12 +24,30 @@ class Home extends MY_AdminController{
 
     function index()
     {		
-		$data = array();
+		//get total pages
+		$get_pages = $this->page_model->get_count_all();
+		//get total posts
+		$get_posts = $this->post_model->get_count_all();
+		//get total comments
+		$get_comments = $this->comments_model->get_count_all();
+		//get total users
+		$get_users = 0;
+
+		//get latest posts
+		$get_latest_post = $this->post_model->get_posts();
+		//get latest comments
 		
-		//load simple template
-		//but still can change themes for further
+		$data = array(
+			'total_pages' => $get_pages,
+			'total_posts' => $get_posts,
+			'total_comments' => $get_comments,
+			'total_users' => $get_users,
+			'latest_post' => $get_latest_post
+		);
+
 		$this->load->section('head','themes/'.$this->_template['themes'].'/static/top_nav');
 		$this->load->section('menu','themes/'.$this->_template['themes'].'/static/side_menu');
+		$this->load->section('flashdata','themes/'.$this->_template['themes'].'/static/notification');
 		$this->load->view('themes/'.$this->_template['themes'].'/layout/home', $data);
 
 	}

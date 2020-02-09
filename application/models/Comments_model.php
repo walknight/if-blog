@@ -192,6 +192,23 @@ class Comments_model extends CI_Model
 		// returns true|false on success|fail
 		return $this->db->delete($this->_table['comments'], ['id' => $id]);
 	}
+
+	/** 
+	* Get count all row data
+	* 
+	* @access public
+	* @param array
+	* @return bool
+	*/ 
+	
+	public function get_count_all($where=null)
+	{
+		if($where != null && is_array($where)){
+			$this->db->where($where);
+		}
+	
+		return $this->db->count_all_results($this->_table['comments']);
+	}
 }
 
 /* End of file comments_model.php */

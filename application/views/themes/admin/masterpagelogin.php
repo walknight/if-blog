@@ -33,12 +33,12 @@
 
     <?php echo $output; ?>    
 
-<script src="https://bootadmin.net/js/jquery.min.js"></script>
-<script src="https://bootadmin.net/js/bootstrap.bundle.min.js"></script>
-<script src="https://bootadmin.net/js/datatables.min.js"></script>
-<script src="https://bootadmin.net/js/moment.min.js"></script>
-<script src="https://bootadmin.net/js/fullcalendar.min.js"></script>
-<script src="https://bootadmin.net/js/bootadmin.min.js"></script>
+<script src="<?=base_url('assets/themes/admin/js/jquery.min.js')?>"></script>
+<script src="<?=base_url('assets/themes/admin/js/bootstrap.bundle.min.js')?>"></script>
+<script src="<?=base_url('assets/themes/admin/js/datatables.min.js')?>"></script>
+<script src="<?=base_url('assets/themes/admin/js/moment.min.js')?>"></script>
+<script src="<?=base_url('assets/themes/admin/js/fullcalendar.min.js')?>"></script>
+<script src="<?=base_url('assets/themes/admin/js/bootadmin.min.js')?>"></script>
 
     <?php
     foreach($js as $file):

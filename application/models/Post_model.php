@@ -30,6 +30,23 @@ class Post_model extends CI_Model
 		return $row['value'];
 	}
 
+	/** 
+	* Get count all row data
+	* 
+	* @access public
+	* @param array
+	* @return bool
+	*/ 
+	
+	public function get_count_all($where=null)
+	{
+		if(isset($where) && is_array($where)){
+			$this->db->where($where);
+		}
+	
+		return $this->db->count_all_results($this->_table['posts']);
+	}
+
 	public function get_posts_count()
 	{
 		$this->db->select('id');

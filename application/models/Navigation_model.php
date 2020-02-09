@@ -143,6 +143,11 @@ class Navigation_model extends CI_Model{
 	public function update($id, $params)
 	{
 		$this->db->update($this->_table['navigation'], $params, array('id' => $id));
+
+		if(array_key_exists('id_groups', $params)){
+			$this->reorganize_navigation($params['id_groups']);
+		}
+
 		return $this->db->affected_rows();
 	}
 	
@@ -160,6 +165,28 @@ class Navigation_model extends CI_Model{
 		if($result->num_rows() > 0)
 		{
 			return $result->row();
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+
+	/** 
+	* Get and return children menu from DB table by parent id.
+	* 
+	* @access public 
+	* @param int
+	* @return object
+	*/ 	
+	public function get_children($id)
+	{
+		$result = $this->db->get_where($this->_table['navigation'], array('parent_id' => $id));
+		
+		if($result->num_rows() > 0)
+		{
+			return $result->result_array();
 		}
 		else
 		{

@@ -9,7 +9,7 @@ $(document).ready(function(){
             output = list.data('output');
         if (window.JSON) {
             if (output) {
-            output.val(window.JSON.stringify(list.nestable('serialize')));
+                output.val(window.JSON.stringify(list.nestable('serialize')));
             }
         } else {
             alert('JSON browser support required for this page.');
@@ -82,8 +82,29 @@ $(document).ready(function(){
     }
 
     var editMenu = function(e){
+        e.preventDefault();
         var targetId = $(this).data('owner-id');
         var target = $('[data-id="' + targetId + '"]');
+        var menuName = target.data('name');
+        var menuUrl = target.data('slug');
+        var desc = target.data('desc');
+        var external = target.data('external');
+        var group = $('#menu_group_edit').val(); 
+        
+        $('#menu_name_edit').val(menuName);
+        $('#menu_url_edit').val(menuUrl);
+        $('#menu_desc_edit').val(desc);
+        
+        if(external == 1)
+            $('#menu_ext_edit').prop('checked', true);
+        else
+            $("#rmenu_ext_edit").prop("checked", false);
+
+        $('#menu_title_edit').val(group);
+        $('#id_nav').val(targetId);
+
+        $("#editMenuModal").modal('show');
+        
     }
 
     var addToMenu = function (name, slug, group=1) {
@@ -133,6 +154,7 @@ $(document).ready(function(){
                     $("#nestable .button-edit").on("click", editMenu);
 
                     alert(response.messages);
+                    window.location  = baseUrl + '/admin/navigation/';
                 }                
                 
             },
@@ -154,6 +176,57 @@ $(document).ready(function(){
         maxDepth: 5
     }).on('change', updateOutput);
 
+    $("#editForm").on('submit', function() {
+		var form = $(this);
+		//console.log(form.serialize());
+		
+		$.ajax({
+			url: form.attr('action'),
+			type: form.attr('method'),
+			data: form.serialize(), 
+			dataType: 'json',
+			success:function(response) {
+				console.log(response);
+				if(response.success === true) {
+				// hide the modal
+				$("#editMenuModal").modal('hide');
+				alert(response.messages);  
+				window.location  = baseUrl + '/admin/navigation/';
+
+				} else {
+	
+				$("#editMenuModal").modal('hide');
+				alert(response.messages);  
+				window.location  = baseUrl + '/admin/navigation/';
+				}
+			}
+		}); 
+        
+		return false;
+    });
+
+    $('#saveOrder').on('click', function(){
+        var get_data = $('#nestable').nestable('serialize');
+        
+        $.ajax({
+			url: baseUrl+'/admin/navigation/reordernav',
+			type: 'POST',
+			data: {'nav' : get_data}, 
+			dataType: 'json',
+			success:function(response) {
+                console.log(response);
+                if(response.error === true){
+                    alert(response.messages);
+                    return;
+                } else {
+                    alert(response.messages);
+                    return;
+                }
+			}
+        }); 
+        
+    });
+    
     $('.addToMenu').click(function(){
         var name = $(this).attr('name');
         var getGroup = $('#menu_group').val(); 

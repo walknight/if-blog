@@ -52,7 +52,7 @@ class Navigation extends MY_AdminController{
         $pages = $this->page_model->getWhere('id, title, url_title',$where_page, 'id DESC');
         $categories = $this->categories_model->getAll('id, name, url_name');
         $group_nav = $this->navigation_model->getAllGroup();
-        $navigation = $this->navigation_model->getWhere(array('id_groups' => $group));
+        $navigation = $this->navigation_model->getWhere(array('id_groups' => $group, 'parent_id' => 0), 'order ASC');
 
         //set data to view
         $group_nav_data = array();
@@ -123,12 +123,84 @@ class Navigation extends MY_AdminController{
 	
 	function reorderNav()
 	{
+		$this->output->unset_template();
+		$response['error'] = false;
+		$response['messages'] = '';
+		if($this->input->post()){
+			/* echo "<pre>";
+			print_r($this->input->post('nav'));
+			echo "</pre>";
+			exit; */
+
+			$nav = $this->input->post('nav');
+			$order = 0;
+			//parent
+			foreach($nav as $parent):
+				$order_update = ++$order;
+				$this->__update_order(0, $parent, $order_update);
+			endforeach;
+
+			$response['messages'] = lang('success_reorder_nav');
+		}
+
+		$this->output
+			->set_content_type('application/json')
+			->set_output(json_encode($response));
+	}
+
+	function __update_order($parent=0, $item, $order){
+		$param_order = array(
+			'parent_id' => $parent,
+			'order' => $order
+		);
+		$this->navigation_model->update($item['id'], $param_order);
+
+		if(array_key_exists('children', $item)){
+			$order_child = 0;
+			foreach($item['children'] as $child):
+				$this->__update_order($item['id'], $child, ++$order_child);
+			endforeach;
+		}
 
 	}
 
 	function update()
 	{
+		$this->output->unset_template();
+		
+		$response['error'] = false;
+		$response['messages'] = '';
 
+		if($this->input->post())
+		{
+			$id = $this->input->post('id_nav');
+			//insert new navigation
+			$param_update = array(
+				'title' => $this->input->post('menu_name_edit'),
+				'description' => $this->input->post('menu_desc_edit'),
+				'url' => $this->input->post('menu_url_edit'),
+				'external' => ($this->input->post('menu_ext_edit')) ? '1' : '0',
+				'id_groups' => ($this->input->post('menu_group_edit')) ? $this->input->post('menu_group_edit') : 0,
+			);
+
+			$update = $this->navigation_model->update($id, $param_update);
+
+			if($update !== FALSE){
+				$response['error'] = false;
+				$response['messages'] = lang('success_update_nav');
+			} else {
+				$response['error'] = true;
+				$response['messages'] = lang('failed_update_nav');
+			}
+			
+		} else {
+			$response['error'] = true;
+			$response['messages'] = lang('invalid_data_nav');
+		}
+
+		$this->output
+			->set_content_type('application/json')
+			->set_output(json_encode($response));
 	}
 
 	//return ajax response
@@ -159,7 +231,7 @@ class Navigation extends MY_AdminController{
 			->set_content_type('application/json')
 			->set_output(json_encode($response));
 	}
-	
+
 }
 
 /* End of file Navigation.php */

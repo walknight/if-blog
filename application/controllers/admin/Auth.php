@@ -56,7 +56,7 @@ class Auth extends MY_AdminController{
 				
                 if($this->ion_auth->login($username, $password, $remember))
                 {															
-					$this->session->set_flashdata('success', $this->ion_auth->messages());
+					$this->session->set_flashdata('success', 'Welcome <b>'.$username.'</b>. '.$this->ion_auth->messages());
 					$home_url = "";
 					
 					if($this->ion_auth->in_group('admin'))

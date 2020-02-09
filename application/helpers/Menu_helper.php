@@ -6,7 +6,7 @@
  * @package		Menu Helper
  * @author		Ifuk Permana
  * @copyright	Copyright (c) 2019
- * @link		http://www.ifthen.com
+ * @link		http://www.ifcode.my.id
  * @since		Version 1.0
  */
 
