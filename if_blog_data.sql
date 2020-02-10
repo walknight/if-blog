@@ -11,7 +11,7 @@
  Target Server Version : 50719
  File Encoding         : 65001
 
- Date: 03/02/2020 12:16:28
+ Date: 10/02/2020 12:20:58
 */
 
 SET NAMES utf8mb4;
@@ -45,16 +45,35 @@ INSERT INTO `if_categories` VALUES (7, 'Jualan', 'jualan', 'Jualan Description')
 DROP TABLE IF EXISTS `if_comments`;
 CREATE TABLE `if_comments`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_parent` int(11) NULL DEFAULT NULL,
   `post_id` int(11) NULL DEFAULT 0,
   `user_id` int(11) NULL DEFAULT NULL,
-  `author` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `author_email` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `email` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `author_ip` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  `comment` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `date` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
-  `modded` int(1) NOT NULL DEFAULT 1,
+  `show` enum('Y','N') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'N',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of if_comments
+-- ----------------------------
+INSERT INTO `if_comments` VALUES (1, NULL, 3, NULL, 'test', 'test@email.com', NULL, '127.0.0.1', 'aaaaaaaaaaa', '2020-02-10 10:35:01', 'N');
+INSERT INTO `if_comments` VALUES (2, NULL, 3, NULL, 'test2', 'test2@email.com', NULL, '127.0.0.1', 'bbbbbbbbbbb', '2020-02-10 10:35:30', 'N');
+INSERT INTO `if_comments` VALUES (3, NULL, 3, NULL, 'test3', 'test3@email.com', NULL, '127.0.0.1', 'cccccccccccc', '2020-02-10 10:35:55', 'N');
+INSERT INTO `if_comments` VALUES (4, NULL, 3, NULL, 'test4', 'test4@email.com', NULL, '127.0.0.1', 'dddddd', '2020-02-10 10:37:18', 'N');
+INSERT INTO `if_comments` VALUES (5, NULL, 3, NULL, 'test5', 'test5@email.com', NULL, '127.0.0.1', 'eeeeeeeeeee', '2020-02-10 10:37:18', 'N');
+INSERT INTO `if_comments` VALUES (6, NULL, 3, NULL, 'test6', 'test6@email.com', NULL, '127.0.0.1', 'fffffffffff', '2020-02-10 10:37:18', 'N');
+INSERT INTO `if_comments` VALUES (7, NULL, 3, NULL, 'test7', 'test7@email.com', NULL, '127.0.0.1', 'ggggggggg', '2020-02-10 10:37:18', 'N');
+INSERT INTO `if_comments` VALUES (8, NULL, 3, NULL, 'test8', 'test8@email.com', NULL, '127.0.0.1', 'hhhhhhhh', '2020-02-10 10:37:18', 'N');
+INSERT INTO `if_comments` VALUES (9, NULL, 3, NULL, 'test9', 'test9@email.com', NULL, '127.0.0.1', 'iiiiiiiiii', '2020-02-10 10:37:18', 'N');
+INSERT INTO `if_comments` VALUES (10, NULL, 3, NULL, 'test10', 'test10@email.com', NULL, '127.0.0.1', 'jjjjjjjjjj', '2020-02-10 10:37:18', 'N');
+INSERT INTO `if_comments` VALUES (11, NULL, 3, NULL, 'test11', 'test11@email.com', NULL, '127.0.0.1', 'kkkkkkkkkk', '2020-02-10 10:37:18', 'N');
+INSERT INTO `if_comments` VALUES (12, NULL, 3, NULL, 'test12', 'test12@email.com', NULL, '127.0.0.1', 'lllllllll', '2020-02-10 10:37:18', 'N');
+INSERT INTO `if_comments` VALUES (14, 1, 3, NULL, 'administrator', NULL, NULL, '::1', 'Oke coba reply comment lagi', '2020-02-10 12:10:52', 'Y');
 
 -- ----------------------------
 -- Table structure for if_groups
@@ -71,7 +90,7 @@ CREATE TABLE `if_groups`  (
 -- ----------------------------
 -- Records of if_groups
 -- ----------------------------
-INSERT INTO `if_groups` VALUES (1, 'admin', 'Administrator', '[\"accessModNavigation\",\"createNavigation\",\"updateNavigation\",\"viewNavigation\",\"deleteNavigation\",\"accessModPage\",\"createPage\",\"updatePage\",\"viewPage\",\"deletePage\",\"accessModPost\",\"createPost\",\"updatePost\",\"viewPost\",\"deletePost\",\"accessModCategory\",\"createCategory\",\"updateCategory\",\"viewCategory\",\"deleteCategory\",\"accessModUser\",\"createUser\",\"updateUser\",\"viewUser\",\"deleteUser\",\"createGroupUser\",\"updateGroupUser\",\"viewGroupUser\",\"deleteGroupUser\",\"updateSetting\",\"viewSetting\"]');
+INSERT INTO `if_groups` VALUES (1, 'admin', 'Administrator', '[\"accessModComments\",\"replyComments\",\"updateComments\",\"viewComments\",\"deleteComments\",\"accessModNavigation\",\"createNavigation\",\"updateNavigation\",\"viewNavigation\",\"deleteNavigation\",\"accessModPage\",\"createPage\",\"updatePage\",\"viewPage\",\"deletePage\",\"accessModPost\",\"createPost\",\"updatePost\",\"viewPost\",\"deletePost\",\"accessModCategory\",\"createCategory\",\"updateCategory\",\"viewCategory\",\"deleteCategory\",\"accessModUser\",\"createUser\",\"updateUser\",\"viewUser\",\"deleteUser\",\"createGroupUser\",\"updateGroupUser\",\"viewGroupUser\",\"deleteGroupUser\",\"updateSetting\",\"viewSetting\"]');
 INSERT INTO `if_groups` VALUES (2, 'members', 'General User', '[\"createCategory\",\"updateCategory\",\"viewCategory\",\"deleteCategory\",\"accessModUser\",\"createUser\",\"updateUser\",\"viewUser\",\"deleteUser\",\"createGroupUser\",\"updateGroupUser\",\"viewGroupUser\",\"deleteGroupUser\",\"updateSetting\",\"viewSetting\"]');
 
 -- ----------------------------
@@ -159,14 +178,16 @@ CREATE TABLE `if_navigation`  (
   `id_groups` int(11) NULL DEFAULT 0,
   `order` int(5) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of if_navigation
 -- ----------------------------
-INSERT INTO `if_navigation` VALUES (1, 0, 'Home', 'Index', 'index.php', '0', 0, 0);
-INSERT INTO `if_navigation` VALUES (2, 0, 'Archive', 'Archive', 'blog/archive/', '0', 0, 0);
-INSERT INTO `if_navigation` VALUES (3, 0, 'Subscribe', 'menu for subscribe', 'home/subscribe', '0', 0, 0);
+INSERT INTO `if_navigation` VALUES (1, 0, 'Home', 'Index', 'index.php', '0', 1, 1);
+INSERT INTO `if_navigation` VALUES (9, 0, 'About Me', 'About Me', 'page/about-me', '0', 2, 1);
+INSERT INTO `if_navigation` VALUES (11, 0, 'About Me', 'About Me', 'page/about-me', '0', 1, 2);
+INSERT INTO `if_navigation` VALUES (12, 11, 'Term and Condition', 'Term and Condition', 'page/term-and-condition', '0', 1, 1);
+INSERT INTO `if_navigation` VALUES (19, 11, 'Product', 'Product', 'page/product', '0', 1, 2);
 
 -- ----------------------------
 -- Table structure for if_pages
@@ -188,7 +209,7 @@ CREATE TABLE `if_pages`  (
   `create_at` datetime(0) NULL DEFAULT NULL,
   `update_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of if_pages
@@ -196,6 +217,7 @@ CREATE TABLE `if_pages`  (
 INSERT INTO `if_pages` VALUES (3, 'Home', 'home', 1, '2020-01-29 07:00:00', 'Homepage', 'home,page', 'Homepage', 'active', '', 1, NULL, '2020-01-28 00:46:19', NULL);
 INSERT INTO `if_pages` VALUES (4, 'About Me', 'about-me', 1, '2020-02-03 07:00:00', '<div style=\"color: rgb(187, 187, 187); background-color: rgb(40, 44, 52); font-family: Consolas, \"Courier New\", monospace; line-height: 19px; white-space: pre;\">Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum fugit numquam distinctio, vitae ex aut ab ut qui doloremque molestias totam, expedita delectus nemo repudiandae, cumque quibusdam blanditiis molestiae commodi.</div>', 'about,lorem,ipsu', 'lorem ipsum about page', 'active', '', 0, NULL, '2020-02-03 11:00:48', NULL);
 INSERT INTO `if_pages` VALUES (5, 'Term and Condition', 'term-and-condition', 1, '2020-02-03 07:00:00', '<div style=\"color: rgb(187, 187, 187); background-color: rgb(40, 44, 52); font-family: Consolas, \"Courier New\", monospace; line-height: 19px; white-space: pre;\">Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum fugit numquam distinctio, vitae ex aut ab ut qui doloremque molestias totam, expedita delectus nemo repudiandae, cumque quibusdam blanditiis molestiae commodi.</div>', 'term,condition,', 'lorem ipsum term condition', 'active', '', 0, NULL, '2020-02-03 11:01:46', NULL);
+INSERT INTO `if_pages` VALUES (6, 'Product', 'product', 1, '2020-02-09 22:31:49', ' ', 'product', 'lorem ipsum', 'active', ' ', 0, NULL, '2020-02-09 22:32:07', NULL);
 
 -- ----------------------------
 -- Table structure for if_posts
@@ -475,7 +497,7 @@ CREATE TABLE `if_users`  (
 -- ----------------------------
 -- Records of if_users
 -- ----------------------------
-INSERT INTO `if_users` VALUES (1, '127.0.0.1', 'administrator', '$2y$12$rem44wTGGGoeTqiXrU6o1e.6FVYzZb8AmrxC2qOxLT0bhk4p2vHGa', 'admin@admin.com', NULL, '', NULL, NULL, NULL, NULL, NULL, 1268889823, 1580695456, 1, 'Admin', 'istrator', 'ADMIN', '0');
+INSERT INTO `if_users` VALUES (1, '127.0.0.1', 'administrator', '$2y$12$rem44wTGGGoeTqiXrU6o1e.6FVYzZb8AmrxC2qOxLT0bhk4p2vHGa', 'admin@admin.com', NULL, '', NULL, NULL, NULL, NULL, NULL, 1268889823, 1581303767, 1, 'Admin', 'istrator', 'ADMIN', '0');
 
 -- ----------------------------
 -- Table structure for if_users_groups
