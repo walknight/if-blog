@@ -3,7 +3,7 @@
 
     <h2 class="mb-4">Dashboard</h2>
 
-    <div class="row mb-4">
+    <div class="row mb-4">        
         <div class="col-md">
             <div class="d-flex border">
                 <div class="bg-primary text-light p-4">

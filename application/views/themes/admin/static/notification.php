@@ -1,6 +1,6 @@
 <div class="row">
     <!-- for notification -->
-    <div class="col-12">
+    <div class="col-12" id="notifContent">
         <?php if($this->session->flashdata('success')){ ?>
         <div class="alert alert-success alert-dismissible" role="alert">
         <?php echo $this->session->flashdata('success') ?>

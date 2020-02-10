@@ -48,15 +48,19 @@ class Home extends MY_AdminController{
 		$this->load->section('head','themes/'.$this->_template['themes'].'/static/top_nav');
 		$this->load->section('menu','themes/'.$this->_template['themes'].'/static/side_menu');
 		$this->load->section('flashdata','themes/'.$this->_template['themes'].'/static/notification');
+		$this->load->js($this->config->item('js').'mod_dashboard.js');
 		$this->load->view('themes/'.$this->_template['themes'].'/layout/home', $data);
 
 	}
 	
 	function welcome()
 	{
-		echo "<pre>";
-		print_r($this->session->userdata());
-		echo "</pre>";
+		$data = array();
+
+		$this->load->section('head','themes/'.$this->_template['themes'].'/static/top_nav');
+		$this->load->section('menu','themes/'.$this->_template['themes'].'/static/side_menu');
+		$this->load->section('flashdata','themes/'.$this->_template['themes'].'/static/notification');
+		$this->load->view('themes/'.$this->_template['themes'].'/layout/welcome', $data);
 	}
 
     function site_settings()

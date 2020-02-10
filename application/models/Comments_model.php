@@ -25,6 +25,55 @@ class Comments_model extends CI_Model
 	}
 
 	/**
+     * getAll
+     * 
+     * get's all comments
+     *
+     * @access  public
+     * @author  ifuk permana
+     * @version 1.0
+     * 
+     * @param string $extra_field = 'add spesifict select with comma ex: to_1,to_2,';
+	 * @param string $order_by = 'to order by column DESC/ASC'
+	 * @param int $limit = 'limit';
+	 * @param int $offest = 'offset
+     * 
+     * @return object on success boolean on failed
+     */
+	public function getAll($extra_field='', $order_by="",$limit="",$offset="")
+	{
+		if($order_by != "")
+		{
+			$this->db->order_by($order_by);
+		}
+
+		if($extra_field != "")
+		{
+			$this->db->select('comments.*, posts.title as post_title, posts.date_posted,'.$extra_field);
+		}
+		else
+		{
+			$this->db->select('comments.*, posts.title as post_title, posts.date_posted');
+		}
+        
+        if($limit != "")
+        {
+            $this->db->limit($limit,$offset);
+        }
+		
+		$this->db->join($this->_table['posts'], "posts.id = comments.post_id");
+		$result = $this->db->get($this->_table['comments']);
+	
+		if($result->num_rows() > 0)
+		{
+			return $result;
+		}
+		else 
+		{
+			return FALSE;
+		}
+	}
+	/**
      * get_comments
      * 
      * get's all comments with 1|0 in modded field
@@ -43,7 +92,7 @@ class Comments_model extends CI_Model
 		// can get it's name
 		$comments = $this->db
 						->select('comments.*, posts.title as post_title')
-						->where('comments.modded', $modded)
+						->where('comments.show', $modded)
 						->join($this->_table['posts'], "posts.id = comments.post_id")
 						->get($this->_table['comments'])
 						->result_array();
@@ -56,7 +105,7 @@ class Comments_model extends CI_Model
 			if ($comment['author'])
 			{
 				// concat author and email and assign to display_name
-				$comment['display_name'] = $comment['author'] . ' [' . $comment['author_email'] . ']';
+				$comment['display_name'] = $comment['name'] . ' [' . $comment['email'] . ']';
 			}
 			// or a registered user
 			else
@@ -99,10 +148,10 @@ class Comments_model extends CI_Model
 		// out of the database.
 		
 		// an unregistered user
-		if ($comment['author'])
+		if ($comment['name'])
 		{
 			// concat author and email and assign to display_name
-			$comment['display_name'] = $comment['author'] . ' [' . $comment['author_email'] . ']';
+			$comment['display_name'] = $comment['name'] . ' [' . $comment['email'] . ']';
 		}
 		// or a registered user
 		else
@@ -114,6 +163,27 @@ class Comments_model extends CI_Model
 
 		// return it
 		return $comment;
+	}
+
+	/** 
+	* Insert comment
+	* 
+	* @access public
+	* @param array
+	* @return int insert_id
+	*/ 
+	public function insert($params)
+	{
+		//insert into data_content table
+		$this->db->insert($this->_table['comments'], $params);
+		$query = $this->db->insert_id();
+			
+		if($query > 0)
+		{
+			return $query;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -132,7 +202,7 @@ class Comments_model extends CI_Model
 	public function hide_comment($id)
 	{
 		// returns true|false on success|fail
-		return $this->db->where('id', $id)->update($this->_table['comments'], ['modded' => 1]);
+		return $this->db->where('id', $id)->update($this->_table['comments'], ['show' => 'N']);
 	}
 
 	/**
@@ -151,7 +221,7 @@ class Comments_model extends CI_Model
 	public function accept_comment($id)
 	{
 		// returns true|false on success|fail
-		return $this->db->where('id', $id)->update($this->_table['comments'], ['modded' => 0]);
+		return $this->db->where('id', $id)->update($this->_table['comments'], ['show' => 'Y']);
 	}
 
 	/**
