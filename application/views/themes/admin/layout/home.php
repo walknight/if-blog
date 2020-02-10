@@ -78,7 +78,7 @@
                         <tbody>
                             <?php $no = 0; foreach($latest_post as $list): ?>
                             <tr>
-                                <td><?=$no++?></td>
+                                <td><?=++$no?></td>
                                 <td><?=$list['title']?></td>
                                 <td><?php echo ($list['status'] == 'published') ? '<span class="badge badge-success">'.lang('index_active_link').'</span>' : '<span class="badge badge-warning">'.lang('index_inactive_link').'</span>';?> </td>
                                 <td><?=$list['date_posted']?></td>
@@ -105,7 +105,35 @@
                     Latest Comments
                 </div>
                 <div class="card-body">
-                    
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Id.</th>
+                                <th>Name</th>                                                             
+                                <th>Date</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach($latest_comment->result() as $row): ?>
+                            <tr>
+                                <td><?=$row->id?></td>
+                                <td>
+                                    <?=$row->name?><br>
+                                    [<?=$row->email?>]
+                                </td>                             
+                                <td><?=date('d M Y H:i:s', strtotime($row->date))?></td>
+                                <td align="center">
+                                <?php
+                                    $attr_btn_edit = 'class="btn btn-sm btn-icon btn-info" title="Edit"';
+                                    echo anchor(site_url('admin/comments'),'<i class="fa fa-chevron-circle-right"></i>', $attr_btn_edit);
+                                ?>
+                                </td>
+                            </tr>
+
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

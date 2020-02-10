@@ -36,13 +36,15 @@ class Home extends MY_AdminController{
 		//get latest posts
 		$get_latest_post = $this->post_model->get_posts();
 		//get latest comments
+		$get_latest_comment = $this->comments_model->getAll('','id DESC', '5','0');
 		
 		$data = array(
 			'total_pages' => $get_pages,
 			'total_posts' => $get_posts,
 			'total_comments' => $get_comments,
 			'total_users' => $get_users,
-			'latest_post' => $get_latest_post
+			'latest_post' => $get_latest_post,
+			'latest_comment' => $get_latest_comment
 		);
 
 		$this->load->section('head','themes/'.$this->_template['themes'].'/static/top_nav');

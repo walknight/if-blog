@@ -86,7 +86,7 @@ class Comments_model extends CI_Model
      * 
      * @return  array
      */
-	public function get_comments($modded = 0)
+	public function get_comments($modded = 'N')
 	{
 		// get the comments and join on the post so we
 		// can get it's name
@@ -120,7 +120,7 @@ class Comments_model extends CI_Model
 	}
 
 	/**
-     * get_comment
+     * get_comment by id
      * 
      * get's the selected comment
      *
