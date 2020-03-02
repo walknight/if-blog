@@ -64,6 +64,7 @@ $route['archive/(:any)/(:any)']			= 'post/archive/$1/$2';
 $route['category/(:any)'] 				= 'post/category/$1';
 $route['tags/(:any)'] 					= 'post/tags/$1';
 $route['search'] 						= 'post/search';
+$route['page/(:any)']                   = 'page/index/$1';
 
 //ROUTE for admin
 $route['admin/auth']                    = 'admin/auth/login';

@@ -107,6 +107,27 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 			return FALSE;
 		}
 	}
+
+	/** 
+	* Get and return specified record from DB table by id.
+	* 
+	* @access public 
+	* @param string
+	* @return object
+	*/ 	
+	public function get_by_url($url_name)
+	{
+		$result = $this->db->get_where($this->_table['pages'], array('url_title' => $url_name));
+		
+		if($result->num_rows() > 0)
+		{
+			return $result->row_array();
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
 	
 	
 	/** 
