@@ -1,3 +1,5 @@
+:warning: :warning: :warning: **This project is still on development and should not be used in production !** :warning: :warning: :warning:
+
 # if-blog
 If-Blog merupakan simple Content Management System(CMS). Dibuat untuk memenuhi kebutuhan anda untuk membuat sebuah website blog yang tidak terlalu rumit. 
 
