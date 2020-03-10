@@ -37,6 +37,7 @@ class Post extends MY_Controller
 		$pages_count = ceil($config['total_rows'] / $config['per_page']);
 		$page = ($page == 0) ? 1 : $page;
 		$offset = $config['per_page'] * ($page - 1);
+
 		$data['posts'] = $this->blog->get_posts($config['per_page'], $offset);
 		
 		if ($data['posts'] != NULL)

@@ -49,8 +49,14 @@ class Post_model extends CI_Model
 
 	public function get_posts_count()
 	{
+		$current_date = date('Y-m-d');
+		
 		$this->db->select('id');
 		$this->db->where('status', 'published');
+		$this->db->where('posts.featured', 0);
+		$this->db->where('posts.sticky', 0);
+		$this->db->where('posts.date_posted <=', $current_date);
+		
 			
 		$query = $this->db->count_all_results($this->_table['posts']);
 			
